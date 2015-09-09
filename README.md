@@ -13,7 +13,7 @@ Project is simply an abstraction for ansi escape codes.
 
 "test" function is basically an assert function on steroids. Node that ansi escape codes are used for detailed display. It would be a good idea to filter details out and get only the results if you want to run many tests at the same time via custom made script.
 
-The function has several modes, namely:
+There are several modes to use that are set via "test_set(size_t mode)" function, namely:
 
 | Mode | Display |
 |:----:|:-------:|
@@ -21,4 +21,4 @@ The function has several modes, namely:
 | 2    | success |
 | 4    | results |
 
-You can then use combo of any of the three flags, just like with linux permissions. 7 displays all three like the shows.
+You can then use combo of any of the three flags, just like with linux permissions. 7 displays all three like the image above shows.
