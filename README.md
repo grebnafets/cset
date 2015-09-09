@@ -19,6 +19,6 @@ The function has several modes, namely:
 |:----:|:-------:|
 | 1    | failure |
 | 2    | success |
-| 3    | results |
+| 4    | results |
 
 You can then use combo of any of the three flags, just like with linux permissions. 7 displays all three like the shows.
