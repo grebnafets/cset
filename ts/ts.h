@@ -5,6 +5,12 @@
 #ifndef TS
 #define TS
 
+/* c START {{{ */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+/* }}} */
+
 #define TS_RESET "\x1b[0m"
 
 /* ATTRIBUTES {{{ */
@@ -31,6 +37,12 @@
 #define TS_ARROW_LEFT_DOWN "\u2b10"
 #define TS_ARROW_RIGHT_UP "\u2b0f"
 #define TS_ARROW_LEFT_UP "\u2b11"
+/* }}} */
+
+/* c END {{{ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 /* }}} */
 
 #endif /* TS */
