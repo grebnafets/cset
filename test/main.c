@@ -16,9 +16,7 @@ void some_testcase()
 
 int main(int argc, char **argv)
 {
-	char *p;
-	size_t mode = 0;
-	if (argc == 2) {mode = strtoul(argv[1], &p, 10);}
+	size_t mode = test_get_mode_from_arg(argc, argv);
 	test_set(mode);
 	some_testcase();
 	return EXIT_SUCCESS;

@@ -30,6 +30,15 @@ __thread float test_total   = 0;
 
 /* functions {{{ */
 
+/* Gives you mode from main arg. */
+size_t test_get_mode_from_arg(int argc, char **argv)
+{
+	char *p;
+	size_t mode = 0;
+	if (argc == 2) {mode = strtoul(argv[1], &p, 10);}
+	return mode;
+}
+
 /* Will tell you if the provided mode is on or not. */
 size_t test_mode_is(size_t mode)
 {
