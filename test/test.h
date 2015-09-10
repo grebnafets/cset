@@ -70,7 +70,9 @@ void test_show_result()
 		if (test_total > 0) {
 			fprintf(stdout, "Result: %.2f%%\n", test_result());
 		} else {
+#ifndef TEST_NO_RESULT_THEN_SHHH
 			fprintf(stdout, "No test cases to run.\n");
+#endif /* TEST_NO_RESULT_THEN_SHHH */
 		}
 	}
 }
