@@ -58,6 +58,10 @@ void *t2(void *arg __attribute__((unused)))
 	len = 5;
 	while (len--) {fork(); usleep(1);}
 	fork_cleanup();
+	if (bad) {
+		fprintf(stderr, "error@fork_cleanup\n");
+		abort();
+	}
 	return NULL;
 }
 
