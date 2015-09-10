@@ -28,3 +28,13 @@ There are several modes to use that are set via "test_set(size_t mode)" function
 You can then use combo of any of the three flags, just like with linux permissions. 7 displays all three like the image above shows.
 
 Currently, it does not support threads, but that feature will be added later.
+
+### support
+
+Sometimes, we just need to know if something is supported on targed platform.
+
+### badcontext
+
+Defines two thread local variables, "bad" and "cntxt".
+"cntxt" simply tells what state the program is in now and bad lets us know
+if it is bad or not.
