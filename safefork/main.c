@@ -1,4 +1,4 @@
-#define TEST_NO_RESULT_THEN_SHHH
+#define TEST_SILENT_IF_NO_TESTS
 #include "../test/test.h"
 
 /* WARNING. Although fork is tested this way, you should be careful of forking
