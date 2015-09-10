@@ -10,6 +10,7 @@ extern "C" {
 /* includes {{{ */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <pthread.h>
 #include "../ts/ts.h"
@@ -83,37 +84,57 @@ void __test(
 	int line __attribute__((unused))
 )
 {
+
+	/* define len, assert, info {{{ */
+	int len = strlen(condstr) + (30 * sizeof(char));
+	if (len < 60) {len = 60;}
+	char assert[len];
+	char info[512];
+	/* }}} */
+
+	/* Increment total number of tests and success if success {{{ */
 	test_total++;
 	if (cond) {
 		test_success++;
 	}
+	/* }}} */
+
+	/* Prepare info {{{ */
+	sprintf(
+		info,		
+		"%s%s%d %s%s %s%s %s%lu %s%d%s\n",
+		TS_BOLD,
+		TS_PURPLE, line,
+		TS_BLUE, func,
+		TS_PURPLE, file,
+		TS_BLUE, pthread_self(),
+		TS_PURPLE, getpid(),
+		TS_RESET
+	);
+	/* }}} */
+
+	/* Display results {{{ */
 	if (cond && test_mode_is(TEST_SHOW_SUCCESS)) {
-		fprintf(
-			stdout,
-			"%s%s%s %-10s%d %s%lu %s%s %s%s %s%d%s\n",
+		sprintf(
+			assert,
+			" %s%s%s%s",
 			TS_BOLD, TS_GREEN,
 			condstr,
-			TS_PURPLE, getpid(),
-			TS_BLUE, pthread_self(),
-			TS_PURPLE, file,
-			TS_BLUE, func,
-			TS_PURPLE, line,
-			TS_RESET
+			TS_RESET	
 		);
+		fprintf(stdout,"%-*s %s", len + 1, assert, info);
 	} else  if (!cond && test_mode_is(TEST_SHOW_FAILURE)) {
-		fprintf(
-			stdout,
-			"%s%s%s %-10s%d %s%lu %s%s %s%s %s%d%s\n",
+		sprintf(
+			assert,
+			" %s%s%s%s",
 			TS_BOLD, TS_RED,
 			condstr,
-			TS_PURPLE, getpid(),
-			TS_BLUE, pthread_self(),
-			TS_PURPLE, file,
-			TS_BLUE, func,
-			TS_PURPLE, line,
-			TS_RESET
+			TS_RESET	
 		);
+		fprintf(stdout,"%-*s %s", len + 1, assert, info);
 	}
+	/* }}} */
+
 }
 /* }}} */
 
