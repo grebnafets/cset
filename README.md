@@ -38,3 +38,8 @@ Sometimes, we just need to know if something is supported on targed platform.
 Defines two thread local variables, "bad" and "cntxt".
 "cntxt" simply tells what state the program is in now and bad lets us know
 if it is bad or not.
+
+### safefork
+
+An attempt to make fork easier via semaphores.
+
