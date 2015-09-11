@@ -96,7 +96,8 @@ void *xmem_c(size_t n, size_t s)
 
 void *xmem_r(void *ptr, size_t s)
 {
-	void *old = ptr;
+	void *old __attribute__((unused));
+	old = ptr;
 	ptr = realloc(ptr, s);
 	critical(ptr, CRITICAL_OUT_OF_MEMORY);
 	#ifdef MSIZEOF
