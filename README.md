@@ -67,8 +67,8 @@ The API is simple. The "x" prefix simply means allocate or die.
 
 Example: mem.m is abstraction for malloc
 
-I do not bother setting any guards for threads nor forks as it is most likely
-already in place.
+I do not bother setting any guards for threads nor forks as they are most
+likely already in place.
 
 ### critical
 
