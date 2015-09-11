@@ -43,3 +43,38 @@ if it is bad or not.
 
 An attempt to make fork easier via semaphores.
 
+### logger
+
+So we can log stuff...
+
+### f
+
+Abstraction for common file handleling algorithms.
+
+### mem
+
+Abstraction for memory allocations.
+The API is simple. The "x" prefix simply means allocate or die.
+
+| mem. | procedure |
+|:----:|:---------:|
+| xm   | xmalloc   |
+| xc   | xcalloc   |
+| xr   | xrealloc  |
+| m    | malloc    |
+| c    | calloc    |
+| r    | realloc   |
+
+Example: mem.m is abstraction for malloc
+
+I do not bother setting any guards for threads nor forks as it is most likely
+already in place.
+
+### critical
+
+Critical is used when there is no way to recover.
+
+### assemblyline
+
+With assemblyline you create set of functions that act on the
+same variable or a structure in sequence.
