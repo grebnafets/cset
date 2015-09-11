@@ -7,7 +7,6 @@ void test_mem()
 	void *t1 = mem.xm(10);
 	test(msizeof(t1) == 10);
 	t1 = mem.xr(t1, 20);
-	printf("%lu\n", msizeof(t1));
 	test(msizeof(t1) == 20);
 	free(t1);
 	t1 = mem.xc(1, 2);

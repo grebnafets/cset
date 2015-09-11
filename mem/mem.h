@@ -1,6 +1,12 @@
 #ifndef MEM
 #define MEM
 
+/* c START {{{ */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+/* }}} */
+
 #include "../critical/critical.h"
 
 const int CONTEXT_MEMORY_ADDRESS_NOT_FOUND = __COUNTER__;
@@ -127,5 +133,11 @@ struct mem {
 	.c = calloc,
 	.r = realloc
 };
+
+/* c END {{{ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+/* }}} */
 
 #endif /* MEM */

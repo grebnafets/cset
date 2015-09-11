@@ -1,6 +1,12 @@
 #ifndef ASSEMBLYLINE
 #define ASSEMBLYLINE
 
+/* c START {{{ */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+/* }}} */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -57,5 +63,11 @@ void free_assemblyline(struct assemblyline *line)
 	free(line->unit);
 	free(line);
 }
+
+/* c END {{{ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+/* }}} */
 
 #endif /* ASSEMBLYLINE */

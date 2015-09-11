@@ -1,6 +1,12 @@
 #ifndef CRITICAL
 #define CRITICAL
 
+/* c START {{{ */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+/* }}} */
+
 #include "../logger/logger.h"
 
 #define CRITICAL_OUT_OF_MEMORY 1
@@ -35,5 +41,11 @@ NO_ERROR:
 	return;
 }
 #define critical(v, t) __critical(v, t, __FILE__, __func__, __LINE__)
+
+/* c END {{{ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+/* }}} */
 
 #endif /* CRITICAL */

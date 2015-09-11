@@ -23,6 +23,12 @@
 #define FORK
 #define NREE
 
+/* c START {{{ */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+/* }}} */
+
 #include "../support/support.h"
 
 #ifdef CAN_FORK
@@ -228,6 +234,12 @@ void nree_free(void *ptr)
 #undef PS
 #undef PE
 
+/* }}} */
+
+/* c END {{{ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 /* }}} */
 
 #endif /* CAN_FORK */

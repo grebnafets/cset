@@ -1,6 +1,12 @@
 #ifndef LOGGER
 #define LOGGER
 
+/* c START {{{ */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+/* }}} */
+
 #include "../badcontext/badcontext.h"
 #include "../safefork/safefork.h"
 
@@ -39,5 +45,11 @@ void __logger(const char *msg, const char *file, const char *func, int line)
 	#endif /* CAN_FORK */
 }
 #define logger(m) __logger(m, __FILE__, __func__, __LINE__)
+
+/* c END {{{ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+/* }}} */
 
 #endif /* LOGGER */

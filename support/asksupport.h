@@ -1,6 +1,12 @@
 #ifndef ASKSUPPORT
 #define ASKSUPPORT
 
+/* c START {{{ */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+/* }}} */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -70,5 +76,10 @@ RET:
 }
 #define ask(q) __ask(#q, q)
 
+/* c END {{{ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+/* }}} */
 
 #endif /* ASKSUPPORT */

@@ -1,6 +1,12 @@
 #ifndef SUPPORT
 #define SUPPORT
 
+/* c START {{{ */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+/* }}} */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,5 +38,11 @@
 /* }}}2 */
 
 /* }}}1 */
+
+/* c END {{{ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+/* }}} */
 
 #endif /* SUPPORT */
