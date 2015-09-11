@@ -24,7 +24,9 @@ void close_logger()
 
 void __logger(const char *msg, const char *file, const char *func, int line)
 {
+	#ifdef CAN_FORK
 	nree_wait();
+	#endif /* CAN_FORK */
 	pthread_mutex_lock(&logger_lock);
 	fprintf(
 		file_logger,
@@ -32,7 +34,9 @@ void __logger(const char *msg, const char *file, const char *func, int line)
 		file, func, line, pthread_self(), getpid(), msg
 	);
 	pthread_mutex_unlock(&logger_lock);
+	#ifdef CAN_FORK
 	nree_done();
+	#endif /* CAN_FORK */
 }
 #define logger(m) __logger(m, __FILE__, __func__, __LINE__)
 
