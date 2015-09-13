@@ -13,11 +13,15 @@ Project is simply an abstraction for ansi escape codes.
 
 ### test
 
-![alt tag](https://raw.githubusercontent.com/grebnafets/cset/master/test/images/demo.valid.1.jpg)
+(How it currerntly looks)
+![alt tag](https://raw.githubusercontent.com/grebnafets/cset/master/test/images/demo.valid.2.jpg)
+
+(Warning, old image, but it shows how you can use it.)
+![alt tag](https://raw.githubusercontent.com/grebnafets/cset/master/test/images/demo.invalid.1.jpg)
 
 "test" function is basically an assert function on steroids. Node that ansi escape codes are used for detailed display. It would be a good idea to filter details out and get only the results if you want to run many tests at the same time via custom made script.
 
-There are several modes to use that are set via "test_set(size_t mode)" function, namely:
+There are several modes to use that are set via "test_set(size_t mode, const char[] testname)" function, namely:
 
 | Mode | Display |
 |:----:|:-------:|
