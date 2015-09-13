@@ -10,10 +10,10 @@ void some_testcase()
 	test(foo != bar);
 
 	test(bar GT foo);
-	test(bar >= foo);
+	test(bar > foo);
 
 	test(foo LT bar);
-	test(foo <= bar);
+	test(foo < bar);
 
 
 	test(foo EQU bar);
