@@ -9,6 +9,7 @@ extern "C" {
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <unistd.h>
 #include <pthread.h>
 #include "../mem/mem.h"
@@ -31,12 +32,23 @@ struct assemblyline *new_assemblyline(void *arg)
 	return line;
 }
 
-void assemblyline_push(struct assemblyline *line, ASSEMBLY_UNIT unit)
+void __assemblyline_push(struct assemblyline *line, size_t count, ...)
 {
-	size_t i = line->len++;
+	size_t currpos, i;
+	va_list args;
+	ASSEMBLY_UNIT unit;
+	va_start(args, count);
+        currpos = line->len;
+	line->len += count;
 	line->unit = mem.xr(line->unit, line->len * sizeof(ASSEMBLY_UNIT));
-	line->unit[i] = unit;
+	for (i = currpos; i < line->len; i += 1) {
+		unit = va_arg(args, ASSEMBLY_UNIT);
+		line->unit[i] = unit;
+	}
+	va_end(args);
 }
+#define ASSEMBLY_UNIT_NUMARGS(args...) ((size_t) sizeof((ASSEMBLY_UNIT[]){args}) / sizeof(ASSEMBLY_UNIT))
+#define assemblyline_push(line, args...) __assemblyline_push(line, ASSEMBLY_UNIT_NUMARGS(args), args)
 
 ASSEMBLY_UNIT assemblyline_pop(struct assemblyline *line)
 {
