@@ -1,6 +1,21 @@
 #ifndef TEST
 #define TEST
 
+/* Reserve words for testing. {{{ */
+/* EQUALS */
+#define EQU ==
+/* NOT EQUALS */
+#define NOT !=
+/* LESS THAN EQUALS */
+#define LTE <=
+/* GREATER THAN EQUALS */
+#define GTE >=
+/* LESS THAN */
+#define LT <
+/* GREATER THAN */
+#define GT >
+/* }}} */
+
 /* c START {{{ */
 #ifdef __cplusplus
 extern "C" {
@@ -10,6 +25,7 @@ extern "C" {
 /* includes {{{ */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -25,11 +41,20 @@ size_t test_mode = 0;
 /* }}} */
 
 /* vars {{{ */
+char test_name_main[100];
+size_t test_name_displayed  = 0;
 __thread float test_success = 0;
 __thread float test_total   = 0;
 /* }}} */
 
+
 /* functions {{{ */
+
+void test_init() __attribute__((constructor));
+void test_init()
+{
+	memset(test_name_main, '\0', 100);
+}
 
 /* Gives you mode from main arg. */
 size_t test_get_mode_from_arg(int argc, char **argv)
@@ -52,11 +77,35 @@ float test_result()
 	return (test_success / test_total) * 100;
 }
 
-/* Set mode */
-void test_set(size_t mode)
+/* Set stuff */
+void test_set_mode(size_t mode)
 {
 	test_mode = mode;
 }
+void test_set_name(const char *name)
+{
+	strcpy(test_name_main, name);
+}
+void __test_set(size_t argcount, ...)
+{
+	size_t mode;
+	const char *name;
+	va_list argp;
+	va_start(argp, argcount);
+	if (argcount == 1) {
+		mode = va_arg(argp, size_t);
+		test_set_mode(mode);
+	} else if (argcount == 2) {
+		mode = va_arg(argp, size_t);
+		name = va_arg(argp, const char *);
+		test_set_mode(mode);
+		test_set_name(name);
+	}
+	va_end(argp);
+}
+#define TEST_SET_ARGNUM_HACKLEN(_2, _1, N, ...) N
+#define TEST_SET_ARGNUM(args...) TEST_SET_ARGNUM_HACKLEN(args, 2, 1, 0)
+#define test_set(args...) __test_set(TEST_SET_ARGNUM(args), args)
 
 /* Run the tests @ end of main. */
 #ifndef TEST_DONT_RUN_AT_END_OF_MAIN
@@ -68,7 +117,19 @@ void test_show_result()
 {
 	if (test_mode_is(TEST_SHOW_RESULT)) {
 		if (test_total > 0) {
-			fprintf(stdout, "Result: %.2f%%\n", test_result());
+			if (test_name_main[0] != '\0') {
+				fprintf(
+					stdout,
+					"%s: %.2f%%\n",
+					test_name_main, test_result()
+				);
+			} else {
+				fprintf(
+					stdout,
+					"%s: %.2f%%\n",
+					"Anon", test_result()
+				);
+			}
 		} else {
 #ifndef TEST_SILENT_IF_NO_TESTS
 			fprintf(stdout, "No test cases to run.\n");
@@ -88,8 +149,12 @@ void __test(
 {
 
 	/* define len, assert, info {{{ */
-	int len = strlen(condstr) + (30 * sizeof(char));
-	if (len < 60) {len = 60;}
+	int len = (strlen(condstr) + 10) * sizeof(char);
+	if (len < 40) {
+		len = 40;
+	} else if (len < 60) {
+		len = 60;
+	}
 	char assert[len];
 	char info[512];
 	/* }}} */
@@ -104,7 +169,7 @@ void __test(
 	/* Prepare info {{{ */
 	sprintf(
 		info,		
-		"%s%s%d %s%s %s%s %s%lu %s%d%s\n",
+		"%s%s%04d %s%s %s%s %s%lu %s%d%s\n",
 		TS_BOLD,
 		TS_PURPLE, line,
 		TS_BLUE, func,
