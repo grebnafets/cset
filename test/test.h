@@ -4,6 +4,7 @@
 /* Reserve words for testing. {{{ */
 /* EQUALS */
 #define EQU ==
+#define IS ==
 /* NOT EQUALS */
 #define NOT !=
 /* LESS THAN EQUALS */
@@ -16,6 +17,7 @@
 #define GT >
 /* DEPENDENCY FOUND */
 #define DEPENDENCY 1
+#define DEP 1
 #define FOUND ==
 /* }}} */
 
@@ -49,7 +51,6 @@ size_t test_name_displayed  = 0;
 __thread float test_success = 0;
 __thread float test_total   = 0;
 /* }}} */
-
 
 /* functions {{{ */
 
