@@ -14,6 +14,9 @@
 #define LT <
 /* GREATER THAN */
 #define GT >
+/* DEPENDENCY FOUND */
+#define DEPENDENCY 1
+#define FOUND ==
 /* }}} */
 
 /* c START {{{ */
