@@ -1,5 +1,5 @@
 #ifndef ASSEMBLYLINE
-#define ASSEMBLYLINE
+#define ASSEMBLYLINE 1
 
 /* c START {{{ */
 #ifdef __cplusplus
@@ -70,10 +70,22 @@ void *assemblyline_run(struct assemblyline *line)
 	return arg;
 }
 
+void *assemblyline_run_arg(struct assemblyline *line, void *arg)
+{
+	size_t i, len;
+	len = line->len;
+	for (i = 0; i < len; i += 1) {
+		arg = line->unit[i](arg);
+	}
+	return arg;
+}
+
 void free_assemblyline(struct assemblyline *line)
 {
-	free(line->unit);
-	free(line);
+	if (line != NULL) {
+		free(line->unit);
+		free(line);
+	}
 }
 
 /* c END {{{ */

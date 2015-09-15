@@ -19,7 +19,7 @@
  * */
 
 #ifndef SAFEFORK
-#define SAFEFORK
+#define SAFEFORK 1
 #define FORK
 #define NREE
 
@@ -65,11 +65,11 @@ const int CONTEXT_BAD_FAILED_TO_CREATE_FORK = __COUNTER__;
 /* spin locks {{{ */
 #ifndef FORK_SPIN
 	#define FORK_SPIN
-#endif /* FORK_LOCK */
+#endif /* FORK_SPIN */
 
 #ifndef NREE_SPIN
 	#define NREE_SPIN
-#endif /* NREE_LOCK */
+#endif /* NREE_SPIN */
 
 #ifndef SAFEFORK_SPIN
 	#define SAFEFORK_SPIN
@@ -215,6 +215,28 @@ void nree_free(void *ptr)
 	PE;
 }
 
+int nree_pthread_mutex_lock(pthread_mutex_t *mutex)
+{
+	int ret;
+	PS;
+	nree_wait();
+	ret = pthread_mutex_lock(mutex);	
+	nree_done();
+	PE;
+	return ret;
+}
+
+int nree_pthread_mutex_unlock(pthread_mutex_t *mutex)
+{
+	int ret;
+	PS;
+	nree_wait();
+	ret = pthread_mutex_unlock(mutex);	
+	nree_done();
+	PE;
+	return ret;
+}
+
 /* }}} */
 
 /* hooks {{{ */
@@ -225,6 +247,8 @@ void nree_free(void *ptr)
 	#define calloc(n, s) nree_calloc(n, s)
 	#define realloc(p, s) nree_realloc(p, s)
 	#define free(p) nree_free(p)
+	#define pthread_mutex_lock(m) nree_pthread_mutex_lock(m)
+	#define pthread_mutex_unlock(m) nree_pthread_mutex_unlock(m)
 
 #endif /* SAFEFORK_HOOK */
 /* }}} */

@@ -54,10 +54,12 @@ __thread float test_total   = 0;
 
 /* functions {{{ */
 
-void test_init() __attribute__((constructor));
-void test_init()
+void test_memfail(void *ptr)
 {
-	memset(test_name_main, '\0', 100);
+	if (ptr == NULL) {
+		fprintf(stderr, "@test.h: Out of mem\n");
+		exit(EXIT_FAILURE);
+	}
 }
 
 /* Gives you mode from main arg. */
@@ -74,6 +76,7 @@ size_t test_mode_is(size_t mode)
 {
 	return (test_mode & mode) == mode;
 }
+
 
 /* Get results. */
 float test_result()
@@ -124,22 +127,88 @@ void test_show_result()
 			if (test_name_main[0] != '\0') {
 				fprintf(
 					stdout,
-					"%s: %.2f%%\n",
-					test_name_main, test_result()
+					"%s:%d:%lu %.2f%%\n",
+					test_name_main,
+					getpid(),
+					pthread_self(),
+				       	test_result()
 				);
 			} else {
 				fprintf(
 					stdout,
-					"%s: %.2f%%\n",
-					"Anon", test_result()
+					"%s:%d:%lu %.2f%%\n",
+					"Anon",
+					getpid(),
+					pthread_self(),
+					test_result()
 				);
 			}
 		} else {
-#ifndef TEST_SILENT_IF_NO_TESTS
+			#ifndef TEST_SILENT_IF_NO_TESTS
 			fprintf(stdout, "No test cases to run.\n");
-#endif /* TEST_SILENT_IF_NO_TESTS */
+			#endif /* TEST_SILENT_IF_NO_TESTS */
 		}
 	}
+}
+
+typedef void *(*TEST_PTHREAD_HOOK)(void *);
+TEST_PTHREAD_HOOK *test_hooks = NULL;
+void **test_hooks_arg = NULL;
+size_t *test_hooks_id = NULL;
+size_t test_hooks_len = 0;
+
+void *test_wrapped_thread(void *arg)
+{
+	size_t i = (size_t)arg;
+	void *res = test_hooks[i](test_hooks_arg[i]);
+	test_show_result();
+	return res;
+}
+
+void test_pthread_cleanup() __attribute__((destructor));
+void test_pthread_cleanup()
+{
+	free(test_hooks);
+	free(test_hooks_arg);
+	free(test_hooks_id);
+	test_hooks = NULL;
+	test_hooks_arg = NULL;
+	test_hooks_id = NULL;
+	test_hooks_len = 0;
+}
+
+int test_pthread_create(
+	pthread_t *thread,
+	const pthread_attr_t *attr,
+	void *(*sr)(void *), void *arg)
+{
+	size_t index = test_hooks_len++;
+	test_hooks = realloc(test_hooks, test_hooks_len * sizeof(TEST_PTHREAD_HOOK));
+	test_memfail(test_hooks);
+	test_hooks_id = realloc(test_hooks_id, test_hooks_len * sizeof(size_t *));
+	test_memfail(test_hooks_id);
+	test_hooks_arg = realloc(test_hooks_arg, test_hooks_len * sizeof(void *));
+	test_memfail(test_hooks_arg);
+	test_hooks[index] = sr;
+	test_hooks_arg[index] = arg;
+	test_hooks_id[index] = index;
+	return pthread_create(
+		thread, attr, &test_wrapped_thread, (void *)test_hooks_id[index]
+	);
+}
+#define pthread_create(t, at, r, a) test_pthread_create(t, at, r, a)
+
+void *test_res(void *arg)
+{
+	test_show_result();
+	return arg;
+}
+
+void test_init() __attribute__((constructor));
+void test_init()
+{
+	memset(test_name_main, '\0', 100);
+	//pthread_push_post(&test_res);
 }
 
 /* test implementation. */

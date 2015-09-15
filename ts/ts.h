@@ -3,7 +3,7 @@
  * */
 
 #ifndef TS
-#define TS
+#define TS 1  
 
 /* c START {{{ */
 #ifdef __cplusplus

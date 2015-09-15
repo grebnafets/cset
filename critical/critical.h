@@ -1,5 +1,5 @@
 #ifndef CRITICAL
-#define CRITICAL
+#define CRITICAL 1
 
 /* c START {{{ */
 #ifdef __cplusplus

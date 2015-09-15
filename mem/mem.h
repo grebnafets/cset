@@ -1,5 +1,5 @@
 #ifndef MEM
-#define MEM
+#define MEM 1
 
 /* c START {{{ */
 #ifdef __cplusplus

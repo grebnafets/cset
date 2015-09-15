@@ -1,5 +1,10 @@
 #include "test.h"
 
+void test_dep()
+{
+	test(DEP FOUND TS);
+}
+
 void some_testcase()
 {
 	int foo, bar;
@@ -30,6 +35,7 @@ int main(int argc, char **argv)
 {
 	size_t mode = test_get_mode_from_arg(argc, argv);
 	test_set(mode, "test");
+	test_dep();
 	some_testcase();
 	return EXIT_SUCCESS;
 }
