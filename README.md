@@ -80,3 +80,19 @@ Critical is used when there is no way to recover.
 
 With assemblyline you create set of functions that act on the
 same variable or a structure in sequence.
+
+### threadwrapp
+
+With threadwrapp you can hook threads with pthread_push_pre and
+pthread_push_post as long you create the threads with thr.create;
+You can also just hook pthread_create like is done in test/test.h.
+
+### hashmap
+
+Just a simple hashmap. Just check hashmap/main.c to see how it is used.
+The thing to remember that the default hash function is just something I wrote
+out of the blue, I have yet to check how well it distributes arbitrary data.
+
+Anyway, if you know the data beforehand, you should replace the function with
+the perfect hash function. You might have to do minor change to the default
+function prototype though.
