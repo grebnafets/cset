@@ -1,6 +1,12 @@
 #ifndef HASHMAP
 #define HASHMAP 1
 
+/* c START {{{ */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+/* }}} */
+
 #include "../badcontext/badcontext.h"
 #include "../mem/mem.h"
 #include <assert.h>
@@ -122,12 +128,12 @@ struct hashmap *hashmap_create(size_t size, HASHMAP_FUNCTION hash, size_t type)
 		cntxt = HASHMAP_INVALID_SIZE;
 		goto OUT;
 	}
-	map = mem.xm(sizeof(struct hashmap));
+	map = (struct hashmap *)mem.xm(sizeof(struct hashmap));
 	map->hash = hash;
 	map->len  = size;
 	map->type = type;
 	map->collissions = 0;
-	map->data = mem.xm(size * sizeof(void *));
+	map->data = (void **)mem.xm(size * sizeof(void *));
 	for (i = 0; i < size; i += 1) {
 		map->data[i] = NULL;
 	} 
@@ -144,7 +150,7 @@ void hashmap_free_array(struct hashmap *map)
 	struct hashmap_array *bucket;
 	leni = map->len;
 	for (i = 0; i < leni; i += 1) {
-		bucket = map->data[i];
+		bucket = (struct hashmap_array *)map->data[i];
 		if (bucket != NULL) {
 			lenj = bucket->ptr;
 			for (j = 0; j < lenj; j += 1) {
@@ -298,12 +304,14 @@ void hashmap_put_array(struct hashmap *map, const void *key, void *val)
 	bucket  = (struct hashmap_array *)map->data[hash];
 	if (bucket == NULL) {
 		/* Init bucket {{{ */
-		bucket = mem.xm(sizeof(struct hashmap_array));
+		bucket = (struct hashmap_array *)mem.xm(
+			sizeof(struct hashmap_array)
+		);
 		bucket->data = NULL;
 		bucket->ptr = 0;
 		bucket->len = 1;
-		bucket->data = mem.xm(1 * sizeof(void *));
-		bucket->key  = mem.xm(1 * sizeof(char *));
+		bucket->data = (void **)mem.xm(1 * sizeof(void *));
+		bucket->key  = (char **)mem.xm(1 * sizeof(char *));
 		map->data[hash] = (void *)bucket;
 		/* }}} */
 	} else {
@@ -327,9 +335,13 @@ void hashmap_put_array(struct hashmap *map, const void *key, void *val)
 	}
 	if (bucket->ptr == bucket->len) {
 		/* Increase size {{{ */
-		bucket->len = hashmap_increase_size(bucket->len);
-		bucket->data = mem.xr(bucket->data, bucket->len * sizeof(void *));
-		bucket->key  = mem.xr(bucket->key, bucket->len * sizeof(char **));
+		bucket->len  = hashmap_increase_size(bucket->len);
+		bucket->data = (void **)mem.xr(
+			bucket->data, bucket->len * sizeof(void *)
+		);
+		bucket->key  = (char **)mem.xr(
+			bucket->key, bucket->len * sizeof(char *)
+		);
 		for (i = bucket->ptr; i < bucket->len; i += 1) {
 			bucket->data[i] = NULL;
 			bucket->key[i]  = NULL;
@@ -337,7 +349,7 @@ void hashmap_put_array(struct hashmap *map, const void *key, void *val)
 		/* }}} */
 	}
 	/* Insert {{{ */
-	bucket->key[index] = mem.xc(strlen(k) + 1, sizeof(char));
+	bucket->key[index] = (char *)mem.xc(strlen(k) + 1, sizeof(char));
 	strcpy(bucket->key[index], k);
 	bucket->data[index] = val;
 	/* }}} */
@@ -363,8 +375,10 @@ void hashmap_put_list(struct hashmap *map, const void *key, void *val)
 	list = (struct hashmap_list *)map->data[hash];
 	if (list == NULL) {
 		/* Insert node. {{{ */
-		list = mem.xm(sizeof(struct hashmap_list));
-		list->key = mem.xc(strlen(k) + 1, sizeof(char));
+		list = (struct hashmap_list *)mem.xm(
+			sizeof(struct hashmap_list)
+		);
+		list->key = (char *)mem.xc(strlen(k) + 1, sizeof(char));
 		strcpy(list->key, k);
 		list->data = val;
 		list->next = NULL;
@@ -381,8 +395,8 @@ void hashmap_put_list(struct hashmap *map, const void *key, void *val)
 			tmp = list;
 			list = list->next;
 			/* Insert node. {{{ */
-			list = mem.xm(sizeof(struct hashmap_list));
-			list->key = mem.xc(strlen(k) + 1, sizeof(char));
+			list = (struct hashmap_list *)mem.xm(sizeof(struct hashmap_list));
+			list->key = (char *)mem.xc(strlen(k) + 1, sizeof(char));
 			strcpy(list->key, k);
 			list->data = val;
 			list->next = NULL;
@@ -428,7 +442,7 @@ void *hashmap_get_array(struct hashmap *map, const void *key)
 		hash = hashmap_hash(k, map->len);
 	}
 	if (map->data[hash] != NULL) {
-		bucket = map->data[hash];
+		bucket = (struct hashmap_array *)map->data[hash];
 		keys = bucket->key;
 		data = bucket->data;
 		len = bucket->ptr;
@@ -495,6 +509,12 @@ void *hashmap_get(struct hashmap *map, const void *key)
 	}
 	return ret;
 }
+/* }}} */
+
+/* c END {{{ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 /* }}} */
 
 #endif /* HASHMAP */

@@ -61,9 +61,15 @@ int pthreadwrapp_create(
 	int ret;
 	size_t index = pthread_unit_len++;
 	size_t len   = index + 1;
-	pthread_unit = mem.xr(pthread_unit, len * sizeof(ASSEMBLY_UNIT));
-	pthread_unit_arg = mem.xr(pthread_unit_arg, len * sizeof(void *));
-	pthreadwrapp_id  = mem.xr(pthreadwrapp_id, len * sizeof(size_t));
+	pthread_unit = (ASSEMBLY_UNIT *)mem.xr(
+		pthread_unit, len * sizeof(ASSEMBLY_UNIT)
+	);
+	pthread_unit_arg = (void **)mem.xr(
+		pthread_unit_arg, len * sizeof(void *)
+	);
+	pthreadwrapp_id  = (size_t *)mem.xr(
+		pthreadwrapp_id, len * sizeof(size_t)
+	);
 	pthread_unit[index]     = unit;
 	pthread_unit_arg[index] = arg;
 	pthreadwrapp_id[index]  = index;

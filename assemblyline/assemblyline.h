@@ -25,7 +25,7 @@ struct assemblyline {
 struct assemblyline *new_assemblyline(void *arg)
 {
 	struct assemblyline *line = NULL;
-	line = mem.xm(sizeof(struct assemblyline));
+	line = (struct assemblyline *)mem.xm(sizeof(struct assemblyline));
 	line->unit = NULL;
 	line->arg  = arg;
 	line->len  = 0;
@@ -40,7 +40,9 @@ void __assemblyline_push(struct assemblyline *line, size_t count, ...)
 	va_start(args, count);
         currpos = line->len;
 	line->len += count;
-	line->unit = mem.xr(line->unit, line->len * sizeof(ASSEMBLY_UNIT));
+	line->unit = (ASSEMBLY_UNIT *)mem.xr(
+		line->unit, line->len * sizeof(ASSEMBLY_UNIT)
+	);
 	for (i = currpos; i < line->len; i += 1) {
 		unit = va_arg(args, ASSEMBLY_UNIT);
 		line->unit[i] = unit;
@@ -55,7 +57,9 @@ ASSEMBLY_UNIT assemblyline_pop(struct assemblyline *line)
 	size_t i = --line->len;
 	ASSEMBLY_UNIT unit = line->unit[i];
 	line->unit[i] = NULL;
-	line->unit = mem.xr(line->unit, line->len * sizeof(ASSEMBLY_UNIT));
+	line->unit = (ASSEMBLY_UNIT *)mem.xr(
+		line->unit, line->len * sizeof(ASSEMBLY_UNIT)
+	);
 	return unit;
 }
 

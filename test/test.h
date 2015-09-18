@@ -183,11 +183,17 @@ int test_pthread_create(
 	void *(*sr)(void *), void *arg)
 {
 	size_t index = test_hooks_len++;
-	test_hooks = realloc(test_hooks, test_hooks_len * sizeof(TEST_PTHREAD_HOOK));
+	test_hooks = (TEST_PTHREAD_HOOK *)realloc(
+		test_hooks, test_hooks_len * sizeof(TEST_PTHREAD_HOOK)
+	);
 	test_memfail(test_hooks);
-	test_hooks_id = realloc(test_hooks_id, test_hooks_len * sizeof(size_t *));
+	test_hooks_id = (size_t *)realloc(
+		test_hooks_id, test_hooks_len * sizeof(size_t *)
+	);
 	test_memfail(test_hooks_id);
-	test_hooks_arg = realloc(test_hooks_arg, test_hooks_len * sizeof(void *));
+	test_hooks_arg = (void **)realloc(
+		test_hooks_arg, test_hooks_len * sizeof(void *)
+	);
 	test_memfail(test_hooks_arg);
 	test_hooks[index] = sr;
 	test_hooks_arg[index] = arg;
