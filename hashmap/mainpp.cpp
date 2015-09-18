@@ -6,7 +6,6 @@
 
 void *test_hashmap_array(void *arg __attribute__((unused)));
 void *test_hashmap_list(void *arg __attribute__((unused)));
-void *test_hashmap_gifts(void *arg __attribute__((unused)));
 
 int main(int argc, char **argv)
 {
