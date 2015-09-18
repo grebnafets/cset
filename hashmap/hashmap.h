@@ -14,20 +14,20 @@ extern "C" {
 #include <pthread.h>
 
 /* types {{{ */
-#define HASHMAP_ARRAY 1
-#define HASHMAP_LIST 2
+#define HASHMAP_ARRAY (size_t)1
+#define HASHMAP_LIST (size_t)2
 /* }}} */
 
 /* sizes {{{ */
-#define HASHMAP_TINY 2
-#define HASHMAP_K1 1 << 10
-#define HASHMAP_K4 1 << 12
-#define HASHMAP_K8 1 << 13
-#define HASHMAP_K32 1 << 15
-#define HASHMAP_M1 1 << 20
-#define HASHMAP_M4 1 << 22
-#define HASHMAP_M8 1 << 23
-#define HASHMAP_M33 1 << 25
+#define HASHMAP_TINY (size_t)2
+#define HASHMAP_K1 (size_t)1 << 10
+#define HASHMAP_K4 (size_t)1 << 12
+#define HASHMAP_K8 (size_t)1 << 13
+#define HASHMAP_K32 (size_t)1 << 15
+#define HASHMAP_M1 (size_t)1 << 20
+#define HASHMAP_M4 (size_t)1 << 22
+#define HASHMAP_M8 (size_t)1 << 23
+#define HASHMAP_M33 (size_t)1 << 25
 /* }}} */
 
 /* memory increase scalars {{{ */
