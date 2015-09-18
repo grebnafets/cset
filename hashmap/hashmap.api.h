@@ -34,6 +34,11 @@ void Hashmap::del(const void *key)
 	hashmap_del(map, key);
 }
 
+void Hashmap::use(HASHMAP_FUNCTION hash)
+{
+	map->hash = hash;
+}
+
 Hashmap::Hashmap(size_t size, HASHMAP_FUNCTION hash, size_t type)
 {
 	map = (struct hashmap *)hashmap_create(size, hash, type);
