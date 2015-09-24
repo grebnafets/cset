@@ -1,15 +1,23 @@
 CFLAGS=-std=gnu99 -Wall -Werror -Wextra -g -pthread -finstrument-functions -fstack-protector-all
+CPPFLAGS=-std=c++11 -Wall -Werror -Wextra -g -pthread -finstrument-functions -fstack-protector-all
 NOVAR=-Wno-unused-parameter -Wno-unused-variable -Wno-unused-function
 
-CC=gcc $(CFLAGS)
+GCC=gcc $(CFLAGS)
+GPP=g++ $(CPPFLAGS)
 
-all: main clean
+all: main mainpp clean
+
+mainpp: mainpp.o
+	$(GPP) -o mainpp mainpp.o
 
 main: main.o
-	$(CC) -o main main.o
+	$(GCC) -o main main.o
+
+mainpp.o:
+	$(GPP) -c mainpp.cpp
 
 main.o:
-	$(CC) -c main.c
+	$(GCC) -c main.c
 
 clean:
 	rm -f *.o

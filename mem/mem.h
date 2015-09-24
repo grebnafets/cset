@@ -32,9 +32,9 @@ void mem_msizeof_push(void *ptr, size_t s)
 {
 	size_t index = mem_storage_count++;
 	size_t size = index + 1;
-	mem_storage = realloc(mem_storage, size * sizeof(void *));
+	mem_storage = (void **)realloc(mem_storage, size * sizeof(void *));
 	critical(mem_storage, CRITICAL_OUT_OF_MEMORY);
-	mem_storage_size = realloc(mem_storage_size, size * sizeof(size_t));
+	mem_storage_size = (size_t *)realloc(mem_storage_size, size * sizeof(size_t));
 	critical(mem_storage_size, CRITICAL_OUT_OF_MEMORY);
 	mem_storage[index] = ptr;
 	mem_storage_size[index] = s;
