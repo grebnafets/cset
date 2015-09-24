@@ -1,7 +1,7 @@
 #include <iostream>
 #define TEST_SILENT_IF_NO_TESTS
 #include "../test/test.h"
-#include "hashmap.api.h"
+#include "hashmap.cpp.h"
 #include "../threadwrapp/threadwrapp.h"
 
 void *test_hashmap_array(void *arg __attribute__((unused)));
