@@ -16,9 +16,9 @@ extern "C" {
 #endif /* __cplusplus */
 /* }}} */
 
-#ifndef CHARMAP_INSERT_HOOK
-#define CHARMAP_INSERT_HOOK(ret, ch)
-#endif /* CHARMAP_INSERT_HOOK */
+#ifndef CHARMAP_FIND_HOOK
+#define CHARMAP_FIND_HOOK(ret, ch)
+#endif /* CHARMAP_FIND_HOOK */
 
 struct charmap {
 	unsigned char *key;
@@ -108,7 +108,7 @@ struct charmap *charmap_find(struct charmap *map, const void *key)
 	len = strlen((char *)k);
 	for (i = 0; i < len; i += 1) {
 		ch = (int)k[i];
-		CHARMAP_INSERT_HOOK(ret, ch);
+		CHARMAP_FIND_HOOK(ret, ch);
 		ret = charmap_down(ret, ch);
 		if (ret == NULL) {
 			break;

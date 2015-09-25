@@ -48,7 +48,7 @@ void print_charmap(void *ret, const int ch)
 	fprintf(stdout, "\n");
 }
 
-#define CHARMAP_INSERT_HOOK(ret, ch) print_charmap(ret, ch)
+#define CHARMAP_FIND_HOOK(ret, ch) print_charmap(ret, ch)
 
 #include "charmap.h"
 
