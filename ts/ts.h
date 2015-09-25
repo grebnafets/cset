@@ -37,6 +37,11 @@ extern "C" {
 #define TS_ARROW_LEFT_DOWN "\u2b10"
 #define TS_ARROW_RIGHT_UP "\u2b0f"
 #define TS_ARROW_LEFT_UP "\u2b11"
+
+#define TS_ARROW_DOWN "\u2193"
+#define TS_ARROW_UP "\u2191"
+#define TS_ARROW_LEFT "\u2190"
+#define TS_ARROW_RIGHT "\u2192"
 /* }}} */
 
 /* c END {{{ */
