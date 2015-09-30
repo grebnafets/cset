@@ -1,4 +1,4 @@
 main
-mainpp
 logger.log
 *.swp
+*.so
