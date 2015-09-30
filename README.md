@@ -1,6 +1,17 @@
 # cset
 ##Small C toy projects
 
+export the directory path the the env CSET_SEARCH_PATH
+example: (in .bashrc)
+CSET_SEARCH_PATH=path_to_downloaded_git_repo
+
+The build structure is contained in the directory build.
+There you will find the root makefiles and you can build the entire project
+at once from there by doing make.
+
+All tests are found with each headerfile. The tests are the "main" executable
+within each directory under cset directory.
+
 ---
 
 Node that these toy projects can depend on each other, it is better to think of this project as a whole.
@@ -14,10 +25,10 @@ Project is simply an abstraction for ansi escape codes.
 ### test
 
 (How it currerntly looks)
-![alt tag](https://raw.githubusercontent.com/grebnafets/cset/master/test/images/demo.valid.2.jpg)
+![alt tag](https://raw.githubusercontent.com/grebnafets/cset/master/cset/test/images/demo.valid.2.jpg)
 
 (Warning, old image, but it shows how you can use it.)
-![alt tag](https://raw.githubusercontent.com/grebnafets/cset/master/test/images/demo.invalid.1.jpg)
+![alt tag](https://raw.githubusercontent.com/grebnafets/cset/master/cset/test/images/demo.invalid.1.jpg)
 
 "test" function is basically an assert function on steroids. Node that ansi escape codes are used for detailed display. It would be a good idea to filter details out and get only the results if you want to run many tests at the same time via custom made script.
 

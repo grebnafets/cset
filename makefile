@@ -1,9 +1,10 @@
 CFLAGS=-std=gnu99 -Wall -Werror -Wextra -g -pthread -finstrument-functions -fstack-protector-all
 CPPFLAGS=-std=c++11 -Wall -Werror -Wextra -g -pthread -finstrument-functions -fstack-protector-all
 NOVAR=-Wno-unused-parameter -Wno-unused-variable -Wno-unused-function
+SEARCHP=-I$(CSET_SEARCH_PATH)
 
-GCC=gcc $(CFLAGS)
-GPP=g++ $(CPPFLAGS)
+GCC=gcc $(SEARCHP) $(CFLAGS)
+GPP=g++ $(SEARCHP) $(CPPFLAGS)
 
 all: main mainpp clean
 

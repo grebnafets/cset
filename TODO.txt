@@ -1,3 +1,8 @@
-TODO: wiki
-TODO: readme about charmap
-TODO: make more c++ apstraction
+TODO:	in build directory, make .sh file that runs all tests with the 4 flag
+	on and collects the result.
+
+TODO:	wiki
+
+TODO:	readme about charmap
+
+TODO:	make more c++ apstraction
