@@ -1,7 +1,9 @@
 # cset
 ##Small C toy projects
 
-export the directory path the the env CSET_SEARCH_PATH
+export environment variable CSET_SEARCH_PATH to contain the path of working
+directory.
+
 example: (in .bashrc)
 CSET_SEARCH_PATH=path_to_downloaded_git_repo
 
