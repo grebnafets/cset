@@ -7,12 +7,15 @@ directory.
 example: (in .bashrc)
 CSET_SEARCH_PATH=path_to_downloaded_git_repo
 
-The build structure is contained in the directory build.
-There you will find the root makefiles and you can build the entire project
-at once from there by doing make.
+The directory "build" contains original makefiles for the whole project.
+Doing "make" within the directory "build" will issue "make" within all
+subdirectories within "cset". It will also create .so files within
+"build/so".
 
-All tests are found with each headerfile. The tests are the "main" executable
-within each directory under cset directory.
+Each project element within directory "cset" contains tests*. You run the
+tests by running ./main [0-7] within projects directory.
+
+*More tests need to be added.
 
 ---
 
