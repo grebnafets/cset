@@ -5,7 +5,8 @@ export environment variable CSET_SEARCH_PATH to contain the path of working
 directory.
 
 example: (in .bashrc)
-CSET_SEARCH_PATH=path_to_downloaded_git_repo
+
+export CSET_SEARCH_PATH=path_to_downloaded_git_repo
 
 The directory "build" contains original makefiles for the whole project.
 Doing "make" within the directory "build" will issue "make" within all
