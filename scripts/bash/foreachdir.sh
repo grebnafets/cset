@@ -5,8 +5,6 @@
 #	@ ${CSET_SEARCH_PATH}/waste
 # Double check its contents with ls command and now you can safly use rm ;)
 
-
-
 # -----------------------------------------------------------------------------
 # Creating api directory under each sub under cset.
 #for DIR in cset/*; do
@@ -52,3 +50,13 @@
 #		fi
 #	done
 #done
+#------------------------------------------------------------------------------
+#for DIR in cset/*; do
+#	for SUB in ${DIR}/*; do
+#		if [ "${SUB}" = "${DIR}/api" ]; then
+#			echo "Creating relative symlink path ../../../../cpp/makefile->CSET_SEARCH_PATH/build/cpp/makefile"
+#			ln -s ../../../../build/cpp/makefile ${SUB}/cpp/makefile
+#		fi
+#	done
+#done
+
