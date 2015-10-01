@@ -1,7 +1,7 @@
 #!/bin/bash
 # Please, once you are done doing whatever with your script, put it below
 # and comment it out. Try to avoid using the rm command.
-# Just move into whatever you want to remove into the wate directory
+# Just move; whatever you want to remove, into the waste directory
 #	@ ${CSET_SEARCH_PATH}/waste
 # Double check its contents with ls command and now you can safly use rm ;)
 
