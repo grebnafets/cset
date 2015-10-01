@@ -11,8 +11,8 @@ all: $(dirs)
 
 $(dirs): %: ../cset/%
 	cd $< && $(MAKE)
-	cd $</cpp && $(MAKE)
-	cd $< && cp $@.h ../../build/so/$@.c
+	cd $</api/cpp && $(MAKE)
+	cd $< && cp $@.h $(CSET_SEARCH_PATH)/build/so/$@.c
 	$(COMPILER) -c -fPIC so/$@.c -o so/$@.o
 	$(COMPILER) so/$@.o -shared -o so/$@.so
 	rm so/$@.o
