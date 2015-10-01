@@ -19,6 +19,7 @@ extern "C" {
 
 /* sizes {{{ */
 #define HASHMAP_TINY (size_t)2
+#define HASHMAP_128 (size_t) 128
 #define HASHMAP_K1 (size_t)1 << 10
 #define HASHMAP_K4 (size_t)1 << 12
 #define HASHMAP_K8 (size_t)1 << 13
@@ -85,22 +86,36 @@ struct hashmap {
 	void **data;
 	size_t len;
 	size_t type;
-	size_t collissions;
+	size_t collision;
 	HASHMAP_FUNCTION hash;
 };
 /* }}} */
 
 /* default hash function {{{ */
+/*
+ * I am not a mathematician so I don't really know how I can approach this
+ * better. Alas, more tests need to be added before making further experiments.
+ * */
 #ifndef HASHMAP_HASH
 #define HASHMAP_HASH
 size_t hashmap_hash(const void *key, size_t size)
 {
 	char *k;
-	size_t ret, i, len;
+	size_t ret, i, len, tmp;
 	k   = (char *)key;
-	ret = len = strlen(k);
-	for (i = 0; i < len; i += 1) {
-		ret += k[i]<<5;
+	/* ---Multiply first and the last and add to strlen ---*/
+	tmp = len = strlen(k);
+	tmp += k[0] * k[len - 1];
+	/* ---Distribute around the center of the allocated space. --- */
+	ret = size / 2;
+	if ((tmp & 2) == 2) {
+		ret += tmp;	
+	} else {
+		ret -= tmp;
+	}
+	/* ----------------------------------------------------------- */
+	for (i = 1; i < len - 1; i += 1) {
+		ret += k[i];
 	}
 	return (ret & (size - 1));
 }
@@ -131,7 +146,7 @@ struct hashmap *hashmap_create(size_t size, HASHMAP_FUNCTION hash, size_t type)
 	map->hash = hash;
 	map->len  = size;
 	map->type = type;
-	map->collissions = 0;
+	map->collision = 0;
 	map->data = (void **)mem.xm(size * sizeof(void *));
 	for (i = 0; i < size; i += 1) {
 		map->data[i] = NULL;
@@ -326,11 +341,12 @@ void hashmap_put_array(struct hashmap *map, const void *key, void *val)
 			}
 		}
 		/* }}} */
+		map->collision++;
 	}
 	if (empty) {
 		index = emptyi;
 	} else {
-		index  = bucket->ptr++;
+		index = bucket->ptr++;
 	}
 	if (bucket->ptr == bucket->len) {
 		/* Increase size {{{ */
@@ -405,6 +421,7 @@ void hashmap_put_list(struct hashmap *map, const void *key, void *val)
 		}
 		list = list->next;
 	}
+	map->collision++;
 OUT:
 	return;
 }
