@@ -5,6 +5,7 @@
 #	@ ${CSET_SEARCH_PATH}/waste
 # Double check its contents with ls command and now you can safly use rm ;)
 
+
 # -----------------------------------------------------------------------------
 # Creating api directory under each sub under cset.
 #for DIR in cset/*; do
@@ -59,4 +60,7 @@
 #		fi
 #	done
 #done
-
+#------------------------------------------------------------------------------
+#for DIR in cset/*; do
+#	echo "Collect data for features and ajustment here." > ${DIR}/adjustment/README.txt
+#done
