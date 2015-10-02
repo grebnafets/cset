@@ -5,15 +5,6 @@
 #	@ ${CSET_SEARCH_PATH}/waste
 # Double check its contents with ls command and now you can safly use rm ;)
 
-for DIR in cset/*; do
-	ls ${DIR} | grep "\.h" | cut -d'.' -f 1 > tmpsh.tmp
-	CONTENTS=$(cat tmpsh.tmp)
-	cd cset
-	ln -s $CONTENTS/$CONTENTS.h $CONTENTS.h
-	cd ..
-	rm tmpsh.tmp
-done
-
 # -----------------------------------------------------------------------------
 # Creating api directory under each sub under cset.
 #for DIR in cset/*; do
