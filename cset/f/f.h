@@ -37,7 +37,8 @@ OUT:
 size_t flen_safe(FILE *f)
 {
 	size_t len = 0;
-	char buf[4096];
+	const size_t bufsize = 4096;
+	char buf[bufsize];
 	size_t tmp = 0;
 	if (!f) {
 		cntxt = F_NULL_PARAM;
@@ -45,7 +46,7 @@ size_t flen_safe(FILE *f)
 		goto OUT;
 	}
 	while (1) {
-		tmp = fread(buf, 1, 256, f);
+		tmp = fread(buf, 1, bufsize, f);
 		if (ferror(f)) {cntxterrno(); goto OUT;}
 		len += tmp;
 		if (tmp != 256) {
@@ -58,7 +59,7 @@ OUT:
 }
 /* }}} */
 
-/* flen main {{{ */
+/* flen main ii{{{ */
 size_t flen(FILE *f)
 {
 	size_t len = 0;
