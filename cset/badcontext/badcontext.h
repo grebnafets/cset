@@ -22,7 +22,8 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "cset/support/support.h"
+#include <errno.h>
+#include <cset/support/support.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <pthread.h>
@@ -34,6 +35,23 @@ extern "C" {
 const int dummy_var__do_not_remove__ensures_cntxt_is_not_zero = __COUNTER__;
 __thread int cntxt = 0;
 __thread int bad   = 0;
+
+void cntxtreset()
+{
+	bad   = 0;
+	cntxt = 0;
+	errno = 0;
+}
+
+void cntxterrno()
+{
+	int err = errno;
+	if (err > 0) {
+		err = -err;
+		bad = 1;
+	}
+	cntxt = err;
+}
 
 int is(int context)
 {
