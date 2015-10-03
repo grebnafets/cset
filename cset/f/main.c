@@ -1,6 +1,10 @@
 #include <cset/test/test.h>
 #include <cset/f/f.h>
 
+/*
+ * TODO: Test bigger file sizes.
+ * */
+
 /* flen {{{ */
 void test_flen_safe()
 {

@@ -49,7 +49,7 @@ size_t flen_safe(FILE *f)
 		tmp = fread(buf, 1, bufsize, f);
 		if (ferror(f)) {cntxterrno(); goto OUT;}
 		len += tmp;
-		if (tmp != 256) {
+		if (tmp != bufsize) {
 			break;
 		}
 	}
