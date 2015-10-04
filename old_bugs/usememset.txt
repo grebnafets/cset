@@ -1,0 +1,20 @@
+This actually might not have happen in the source, but it is still generally
+valid.
+
+Using memset means you can take safety measures, like for threads and forks.
+
+String termination such as foo[len] = '\0'; will effectively make it very hard
+to make any possible precautions later on.
+There are number of ways to optimize later that involve removal and
+relocations of locks.
+
+I intent; over time, to define the set of non-rentry. The hope is to automate
+synchornization via internal router.
+
+P.S.
+This wasn't thought of from the very beginning and there might be string
+termination in the source :( (sorry...)
+Feel free to replace string termination with memset if you find one in the
+source. These kinds of patches will be accepted to the main branch even if it
+only envolves one character!
+
