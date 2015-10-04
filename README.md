@@ -1,6 +1,9 @@
 # cset
 ##Small C toy projects
-
+--
+Tested only on Linux but is developed for *nix systems.
+--
+## How to prepare.
 export environment variable CSET_SEARCH_PATH to contain the path of working
 directory.
 
