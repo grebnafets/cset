@@ -205,6 +205,30 @@ void *nree_realloc(void *ptr, size_t size)
 	return ptr;
 }
 
+void *nree_memmove(void *dest, const void *src, size_t n)
+{
+	PS;
+	void *ret = NULL;
+	nree_wait();
+	ret = memmove(dest, src, n);
+	SAFEFORK_SPIN;
+	nree_done();
+	PE;
+	return ret;
+}
+
+void *nree_memset(void *s, int c, size_t n)
+{
+	PS;
+	void *ret = NULL;
+	nree_wait();
+	ret = memset(s, c, n);
+	SAFEFORK_SPIN;
+	nree_done();
+	PE;
+	return ret;
+}
+
 void nree_free(void *ptr)
 {
 	PS;
@@ -246,6 +270,8 @@ int nree_pthread_mutex_unlock(pthread_mutex_t *mutex)
 	#define malloc(s) nree_malloc(s)
 	#define calloc(n, s) nree_calloc(n, s)
 	#define realloc(p, s) nree_realloc(p, s)
+	#define memmove(d, s, n) nree_memmove(d, s, n)
+	#define memset(s, c, n) nree_memset(s, c, n)
 	#define free(p) nree_free(p)
 	#define pthread_mutex_lock(m) nree_pthread_mutex_lock(m)
 	#define pthread_mutex_unlock(m) nree_pthread_mutex_unlock(m)

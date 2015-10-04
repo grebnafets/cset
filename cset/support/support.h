@@ -15,6 +15,7 @@ extern "C" {
 /* Macro def {{{ */
 
 #define CAN_FORK 0
+#define CAN_SIGACTION 0
 
 /* }}} */
 
@@ -24,17 +25,28 @@ extern "C" {
 #ifdef __CYGWIN__
 	#undef CAN_FORK
 	#define CAN_FORK 1
+	/* 
+	 * TODO: check support under cygwin
+	 * #undef CAN_SIGACTION
+	 * #define CAN_SIGACTION 1
+	 *
+	 * */
 #endif /* __CYGWIN__ */
 
 #ifdef __linux__
 	#undef CAN_FORK
 	#define CAN_FORK 1
+	#undef CAN_SIGACTION
+	#define CAN_SIGACTION 1
 #endif /* __linux__ */
 
 #ifdef __unix__
 	#undef CAN_FORK
 	#define CAN_FORK 1
+	#undef CAN_SIGACTION
+	#define CAN_SIGACTION 1
 #endif /* __unix__ */
+
 /* }}}2 */
 
 /* }}}1 */

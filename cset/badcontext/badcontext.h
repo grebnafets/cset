@@ -22,6 +22,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 #include <errno.h>
 #include <cset/support/support.h>
 #include <unistd.h>
@@ -58,23 +59,50 @@ int is(int context)
 	return context == cntxt;
 }
 
+void (*segfault_handle)(void) = NULL;
+
+void segfault_sigaction(
+	int signal __attribute__((unused)),
+	siginfo_t *si __attribute__((unused)),
+	void *arg __attribute__((unused))
+)
+{
+	fprintf(stderr, "Segfault detected.\n");
+	if (segfault_handle != NULL) {
+		segfault_handle();
+	}
+	abort();
+}
+
+
 /* @fork {{{ */
 
-#ifdef CAN_FORK
-
+#if CAN_FORK
 void badcontext_atfork()
 {
 	cntxt = 0;
 	bad   = 0;
 }
-
-void register_badcontext_atfork() __attribute__((constructor));
-void register_badcontext_atfork()
-{
-	pthread_atfork(NULL, NULL, &badcontext_atfork);
-}
-
 #endif /* CAN_FORK */
+
+void badcontext_init() __attribute__((constructor));
+void badcontext_init()
+{
+#if CAN_FORK
+	pthread_atfork(NULL, NULL, &badcontext_atfork);
+#endif
+
+#if CAN_SIGACTION
+#ifndef NO_SIGACTION
+	struct sigaction sa;
+	memset(&sa, 0, sizeof(sigaction));
+	sigemptyset(&sa.sa_mask);
+	sa.sa_sigaction = &segfault_sigaction;
+	sa.sa_flags = SA_SIGINFO;
+	sigaction(SIGSEGV, &sa, NULL);
+#endif
+#endif
+}
 
 /* }}} */
 
