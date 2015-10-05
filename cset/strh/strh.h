@@ -77,10 +77,10 @@ size_t *strh_indexOf(const void *haystack, const void *needle, size_t at)
 
 const int STRH_INVALID_CHAR_BYTE_ORIGIN = __COUNTER__;
 
-int strh_utf8_width(const void *ch)
+size_t strh_utf8_width(const void *ch)
 {
 	unsigned char *c = (unsigned char *)ch;
-	int i = 0;
+	size_t i = 0;
 	if ((c[0] & 0xC0) == 0x80) {
 		cntxt = STRH_INVALID_CHAR_BYTE_ORIGIN;
 		bad = 1;
@@ -155,7 +155,7 @@ struct strh {
 	int (*equ)(const void *str1, const void *str2);
 	int (*chk)(const void *str1, const void *str2);
 	struct strh_utf8 {
-		int (*w)(const void *ch);
+		size_t (*w)(const void *ch);
 		size_t (*len)(const void *str);
 	} utf8;
 	size_t *(*indexof)(const void *haystack, const void *needle, size_t at);

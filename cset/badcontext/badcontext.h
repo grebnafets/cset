@@ -95,7 +95,7 @@ void badcontext_init()
 #if CAN_SIGACTION
 #ifndef NO_SIGACTION
 	struct sigaction sa;
-	memset(&sa, 0, sizeof(sigaction));
+	memset(&sa, 0, sizeof(struct sigaction));
 	sigemptyset(&sa.sa_mask);
 	sa.sa_sigaction = &segfault_sigaction;
 	sa.sa_flags = SA_SIGINFO;
