@@ -303,14 +303,14 @@ void test_add_diff(const char *expected, const char *result)
 		test_fexpected, test_diff_count * sizeof(char *)
 	);
 	len = strlen(expected);
-	test_fexpected[index] = calloc(len + 1, sizeof(char));
+	test_fexpected[index] = (char *)calloc(len + 1, sizeof(char));
 	strcpy(test_fexpected[index], expected);
 
 	test_fresult = (char **)realloc(
 		test_fresult, test_diff_count * sizeof(char *)
 	);
 	len = strlen(result);
-	test_fresult[index] = calloc(len + 1, sizeof(char));
+	test_fresult[index] = (char *)calloc(len + 1, sizeof(char));
 	strcpy(test_fresult[index], result);
 }
 
