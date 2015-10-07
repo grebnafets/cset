@@ -84,7 +84,8 @@ void *fget(const char *filename)
 	void *ret = NULL;
 	FILE *f    = NULL;
 	size_t len = 0;
-	f   = fopen(filename, "r");
+	f = fopen(filename, "r");
+	if (ferror(f)) {cntxterrno(); goto OUT;}
 	len = flen(f);
 	if (bad) {goto OUT;}
 	ret = mem.xc(len + 1, sizeof(char));
@@ -95,57 +96,17 @@ OUT:
 	return ret;
 }
 
-/*
-TODO: Write strh
-#define FPUT_NEW 0
-#define FPUT_APPEND 1
-#define FPUT_PREPEND 2
-#define FPUT_REPLACE 4
-void fput(const char *filename, const void *contents, size_t at, int how)
+void fput(const char *filename, const void *contents)
 {
-	unsigned char *ret = NULL;
-	unsigned char *c = (unsigned char *)contents;
-	unsigned char *old;
-	if (at > 0) {
-		old = (unsigned char *)fget(filename);
-		if (bad) {goto OUT;}
-	}
-	if (how) {
-		if ((how & FPUT_PREPEND) == FPUT_PREPEND) {
-			if (at > 0) { 
-				if ((how & FPUT_REPLACE) == FPUT_REPLACE) {
-					// prepend and replace at location
-				} else {
-					// split, prepend and join at location
-				}
-			} else {
-				// split, prepend and join at beginning
-			}
-		}
-		if ((how & FPUT_APPEND) == FPUT_APPEND) {
-			if (at > 0) {
-				if ((how & FPUT_REPLACE) == FPUT_REPLACE) {
-					// append and replace at location
-				} else {
-					// split, append and join at location
-				}
-			} else {
-				// append at end
-			}
-		}
-	} else if (at > 0) {
-		if ((how & FPUT_REPLACE) == FPUT_REPLACE) {
-			// replace at location
-		} else {
-			// split, place and join at location
-		}
-	} else {
-		// dump old contents and write new	
-	}
+	char *c = (char *)contents;
+	FILE *f = NULL;
+	f = fopen(filename, "w");
+	if (ferror(f)) {cntxterrno(); goto OUT;}
+	fprintf(f, "%s", c);
+	fclose(f);
 OUT:
 	return;
 }
-*/
 
 /* c END {{{ */
 #ifdef __cplusplus
