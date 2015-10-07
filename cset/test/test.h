@@ -361,7 +361,10 @@ void __test_diff(
 			memset(lresult, '\n', sizeof(lresult));
 			l++;
 		}
+		fclose(f1);
+		fclose(f2);
 	}
+
 }
 #define test_diff() __test_diff(__FILE__, __func__, __LINE__)
 
