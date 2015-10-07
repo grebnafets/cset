@@ -352,7 +352,12 @@ void __test_diff(
 				);
 				break;
 			}
-			fprintf(stdout, " %lu", l);
+			if(0
+				|| test_mode_is(TEST_SHOW_SUCCESS)
+				|| test_mode_is(TEST_SHOW_FAILURE)
+			) {
+				fprintf(stdout, " %lu", l);
+			}
 			testdelicate(
 				!strcmp(lexpected, lresult),
 				file, func, line
