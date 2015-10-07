@@ -12,10 +12,10 @@ int main(int argc, char **argv)
 	size_t mode = test_get_mode_from_arg(argc, argv);
 	test_set(mode, "hashmap");
 	pthread_t t[2];
-	thr.create(&t[0], NULL, &test_hashmap_array, NULL);
-	thr.create(&t[1], NULL, &test_hashmap_list, NULL);
-	thr.join(t[0], NULL);
-	thr.join(t[1], NULL);
+	pthread_create(&t[0], NULL, &test_hashmap_array, NULL);
+	pthread_create(&t[1], NULL, &test_hashmap_list, NULL);
+	pthread_join(t[0], NULL);
+	pthread_join(t[1], NULL);
 	return EXIT_SUCCESS;
 }
 

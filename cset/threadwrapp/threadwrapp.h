@@ -78,7 +78,10 @@ int pthreadwrapp_create(
 	);
 	return ret;
 }
+#undef pthread_create
+#define pthread_create(t, a, f, arg) pthreadwrapp_create(t, a, f, arg)
 
+/*
 struct thr {
 	int (*create)(
 		pthread_t *thread,
@@ -90,5 +93,6 @@ struct thr {
 	.create = &pthreadwrapp_create,
 	.join   = &pthread_join
 };
+*/
 
 #endif /* THREADWRAPP */

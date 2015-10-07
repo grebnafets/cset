@@ -75,12 +75,12 @@ void test_thread_preandpost()
 	arg1->a = arg1->b = arg1->c = arg1->d = arg1->e = 0;
 	arg2->a = arg2->b = arg2->c = arg2->d = arg2->e = 0;
 	arg3->a = arg3->b = arg3->c = arg3->d = arg3->e = 0;
-	thr.create(&t[0], NULL, &thread, arg1);
-	thr.create(&t[1], NULL, &thread, arg2);
-	thr.create(&t[2], NULL, &thread, arg3);
-	thr.join(t[0], NULL);
-	thr.join(t[1], NULL);
-	thr.join(t[2], NULL);
+	pthread_create(&t[0], NULL, &thread, arg1);
+	pthread_create(&t[1], NULL, &thread, arg2);
+	pthread_create(&t[2], NULL, &thread, arg3);
+	pthread_join(t[0], NULL);
+	pthread_join(t[1], NULL);
+	pthread_join(t[2], NULL);
 	test(arg1->a);test(arg1->b);test(arg1->c);test(arg1->d);test(arg1->e);
 	test(arg2->a);test(arg2->b);test(arg2->c);test(arg2->d);test(arg2->e);
 	test(arg3->a);test(arg3->b);test(arg3->c);test(arg3->d);test(arg3->e);

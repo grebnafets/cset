@@ -222,13 +222,13 @@ int main(int argc, char **argv)
 	size_t mode = test_get_mode_from_arg(argc, argv);
 	test_set(mode, "hashmap");
 	pthread_t t[4];
-	thr.create(&t[0], NULL, &test_hashmap_array1, NULL);
-	thr.create(&t[1], NULL, &test_hashmap_array2, NULL);
-	thr.create(&t[2], NULL, &test_hashmap_array3, NULL);
-	thr.create(&t[3], NULL, &test_hashmap_list, NULL);
-	thr.join(t[0], NULL);
-	thr.join(t[1], NULL);
-	thr.join(t[2], NULL);
-	thr.join(t[3], NULL);
+	pthread_create(&t[0], NULL, &test_hashmap_array1, NULL);
+	pthread_create(&t[1], NULL, &test_hashmap_array2, NULL);
+	pthread_create(&t[2], NULL, &test_hashmap_array3, NULL);
+	pthread_create(&t[3], NULL, &test_hashmap_list, NULL);
+	pthread_join(t[0], NULL);
+	pthread_join(t[1], NULL);
+	pthread_join(t[2], NULL);
+	pthread_join(t[3], NULL);
 	return EXIT_SUCCESS;
 }

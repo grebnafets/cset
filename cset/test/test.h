@@ -151,6 +151,7 @@ void test_show_result()
 	}
 }
 
+/* hook threads {{{ */
 typedef void *(*TEST_PTHREAD_HOOK)(void *);
 TEST_PTHREAD_HOOK *test_hooks = NULL;
 void **test_hooks_arg = NULL;
@@ -202,19 +203,14 @@ int test_pthread_create(
 		thread, attr, &test_wrapped_thread, (void *)test_hooks_id[index]
 	);
 }
+#undef pthread_create
 #define pthread_create(t, at, r, a) test_pthread_create(t, at, r, a)
-
-void *test_res(void *arg)
-{
-	test_show_result();
-	return arg;
-}
+/* }}} */
 
 void test_init() __attribute__((constructor));
 void test_init()
 {
 	memset(test_name_main, '\0', 100);
-	//pthread_push_post(&test_res);
 }
 
 /* test implementation. */
