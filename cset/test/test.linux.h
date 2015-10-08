@@ -78,6 +78,17 @@ size_t test_mode_is(size_t mode)
 	return (test_mode & mode) == mode;
 }
 
+size_t test_is_display()
+{
+	size_t res = 0;
+	if(0
+		|| test_mode_is(TEST_SHOW_SUCCESS)
+		|| test_mode_is(TEST_SHOW_FAILURE)
+	) {
+		res = 1;
+	}
+	return res;
+}
 
 /* Get results. */
 float test_result()
@@ -328,7 +339,17 @@ void __test_diff(
 	char *expected;
 	char *result;
 	l = 1;
+
 	for (i = 0; i < len; i += 1) {
+		if(test_is_display()) {
+			fprintf(
+				stdout,
+				"%s%s ?= %s%s\n",
+				TS_WHITE,
+				test_fexpected[i], test_fresult[i],
+				TS_RESET
+			);
+		}
 		f1 = fopen(test_fexpected[i], "r");
 		if (ferror(f1)) {perror(strerror(errno));abort();}
 		f2 = fopen(test_fresult[i], "r");
@@ -352,10 +373,7 @@ void __test_diff(
 				);
 				break;
 			}
-			if(0
-				|| test_mode_is(TEST_SHOW_SUCCESS)
-				|| test_mode_is(TEST_SHOW_FAILURE)
-			) {
+			if(test_is_display()) {
 				fprintf(stdout, " %lu", l);
 			}
 			testdelicate(
@@ -366,6 +384,7 @@ void __test_diff(
 			memset(lresult, '\n', sizeof(lresult));
 			l++;
 		}
+		l = 1;
 		fclose(f1);
 		fclose(f2);
 	}
