@@ -37,7 +37,7 @@ char mat4fmt[] = "[\n\t%.5f, %.5f, %.5f, %.5f\n\t%.5f, %.5f, %.5f, %.5f\n\t%.5f,
 
 char *mat3f_toString(float *mat)
 {
-	char *buf = mem.xc(1024, sizeof(char));
+	char *buf = (char *)mem.xc(1024, sizeof(char));
 	sprintf(
 		buf, mat3fmt,
 		mat[0], mat[1], mat[2],
@@ -49,7 +49,7 @@ char *mat3f_toString(float *mat)
 
 char *mat3d_toString(double *mat)
 {
-	char *buf = mem.xc(1024, sizeof(char));
+	char *buf = (char *)mem.xc(1024, sizeof(char));
 	sprintf(
 		buf, mat3fmt,
 		mat[0], mat[1], mat[2],
@@ -61,7 +61,7 @@ char *mat3d_toString(double *mat)
 
 char *mat4f_toString(float *mat)
 {
-	char *buf = mem.xc(1024, sizeof(char));
+	char *buf = (char *)mem.xc(1024, sizeof(char));
 	sprintf(
 		buf, mat4fmt,
 		mat[0], mat[1], mat[2], mat[3],
@@ -74,7 +74,7 @@ char *mat4f_toString(float *mat)
 
 char *mat4d_toString(double *mat)
 {
-	char *buf = mem.xc(1024, sizeof(char));
+	char *buf = (char *)mem.xc(1024, sizeof(char));
 	sprintf(
 		buf, mat4fmt,
 		mat[0], mat[1], mat[2], mat[3],

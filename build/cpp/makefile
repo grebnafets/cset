@@ -1,4 +1,4 @@
-FLAGS=-std=c++11 -Wall -Werror -Wextra -g -pthread -finstrument-functions -fstack-protector-all
+FLAGS=-std=c++11 -Wall -Werror -Wextra -g -pthread
 SEARCH_PATH=-I$(CSET_SEARCH_PATH)
 
 COMPILER=g++ $(SEARCH_PATH) $(FLAGS)

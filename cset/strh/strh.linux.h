@@ -19,7 +19,7 @@ void *strh_create(const void *str)
 {
 	char *tmp = (char *)str;
 	size_t size = strlen(tmp);
-	char *ret = mem.xc(size + 1, sizeof(char));
+	char *ret = (char *)mem.xc(size + 1, sizeof(char));
 	strcpy(ret, tmp);
 	return (void *)ret;
 }
@@ -67,7 +67,7 @@ size_t *strh_indexOf(const void *haystack, const void *needle, size_t at)
 			}
 		}
 	}
-	res = mem.xm((j + 1) * sizeof(size_t));
+	res = (size_t *)mem.xm((j + 1) * sizeof(size_t));
 	res[0] = j;
 	for (i = 1; i < j + 1; i += 1) {
 		res[i] = pre[i - 1];
@@ -130,7 +130,8 @@ void strh_put(void *subject, const void *object, size_t at)
 	segfault_handle = &strh_insert_segfault;
 	size_t slen = strlen((char *)*s);
 	segfault_handle = NULL;
-	size_t olen = strlen((char *)o);
+	size_t olen  = strlen((char *)o);
+	size_t displ = 0;
 	/* Check vality of insert location. */
 	if (at > slen) {
 		cntxt = STRH_INVALID_STR_LOCATION;
@@ -138,10 +139,13 @@ void strh_put(void *subject, const void *object, size_t at)
 		goto OUT;
 	}
 	/* Calculte displacement. */
-	size_t displ = slen - at;
+	displ = slen - at;
 	/* Insert string. */
 	if (olen > 0) {
-		*s = mem.xr(*s, (slen + olen + 1) * sizeof(char));
+		*s = (unsigned char *)mem.xr(
+			*s,
+			(slen + olen + 1) * sizeof(char)
+		);
 		memset(*s + slen, '\0', olen + 1);
 		memmove(*s + at + olen, *s + at, displ);
 		memmove(*s + at, o, olen);
@@ -150,6 +154,7 @@ OUT:
 	return;
 }
 
+#ifndef __cplusplus
 struct strh {
 	void *(*create)(const void *str);
 	int (*equ)(const void *str1, const void *str2);
@@ -169,6 +174,7 @@ struct strh {
 	.indexof  = &strh_indexOf,
 	.put      = &strh_put
 };
+#endif /* __cplusplus */
 
 /* c END {{{ */
 #ifdef __cplusplus

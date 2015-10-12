@@ -1,4 +1,4 @@
-FLAGS=-std=gnu99 -Wall -Werror -Wextra -g -pthread -finstrument-functions -fstack-protector-all -fopenacc
+FLAGS=-std=gnu99 -Wall -Werror -Wextra -g -pthread
 SEARCH_PATH=-I$(CSET_SEARCH_PATH)
 LINKS=-lm
 

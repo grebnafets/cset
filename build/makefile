@@ -5,7 +5,7 @@ SEARCH_PATH=-I$(CSET_SEARCH_PATH)
 COMPILER=gcc $(SEARCH_PATH) $(FLAGS)
 
 dirs=test ts support badcontext mem f logger critical safefork assemblyline  \
-     threadwrapp hashmap charmap
+     threadwrapp hashmap charmap strh mat
 
 all: $(dirs)
 
