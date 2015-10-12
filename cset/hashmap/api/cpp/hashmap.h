@@ -5,7 +5,7 @@
 
 class Hashmap {
 	private:
-		struct hashmap *map = NULL;
+		struct hashmap *map;
 	public:
 		void put(const void *key, void *val);
 		void *get(const void *key);
