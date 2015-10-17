@@ -11,6 +11,18 @@ void test_strh_create()
 	free(result);
 }
 
+void test_strh_create_array()
+{
+	char **arr = (char **)strh_create_array(
+		3,
+		(char *[]){"one", "two", "three"}
+	);
+	test(strh.equ(arr[0], "one"));
+	test(strh.equ(arr[1], "two"));
+	test(strh.equ(arr[2], "three"));
+	strh_free_array(3, arr);
+}
+
 void test_strh_equ()
 {
 	const char *foo = "foo";
@@ -116,6 +128,7 @@ int main(int argc, char **argv)
 	size_t mode = test_get_mode_from_arg(argc, argv);
 	test_set(mode, "strh");
 	test_strh_create();
+	test_strh_create_array();
 	test_strh_equ();
 	test_strh_chk();
 	test_strh_utf8();

@@ -6,3 +6,4 @@ TODO:	wiki
 TODO:	readme about charmap
 
 TODO:	make more c++ apstraction
+	+for strh strh_create_array

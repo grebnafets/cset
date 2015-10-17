@@ -24,6 +24,29 @@ void *strh_create(const void *str)
 	return (void *)ret;
 }
 
+void *strh_create_array(size_t count, void *str)
+{
+	char *tmp;
+	char **d = (char **)str;
+	char **ret = (char **)mem.xm(count * sizeof(char *));
+	size_t i;
+	for (i = 0; i < count; i += 1) {
+		tmp = d[i];
+		ret[i] = (char *)strh_create(tmp);
+	}
+	return (void *)ret;
+}
+
+void strh_free_array(size_t count, void *str)
+{
+	char **s = (char **)str;
+	size_t i;
+	for (i = 0; i < count; i += 1) {
+		free(s[i]);
+	}
+	free(s);
+}
+
 int strh_equ(const void *str1, const void *str2)
 {
 	char *s1, *s2;
