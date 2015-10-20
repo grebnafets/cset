@@ -26,6 +26,9 @@ extern "C" {
 const int dummy_var__do_not_remove__ensures_cntxt_is_not_zero = __COUNTER__;
 __thread int cntxt = 0;
 __thread int bad   = 0;
+#ifdef DEBUG
+__thread char *badcontextstr;
+#endif
 
 void cntxtreset()
 {
