@@ -134,6 +134,16 @@ struct mem {
 	.r = realloc
 };
 
+void freeptr(void *ptr)
+{
+	void **p = (void **)ptr;
+	free(*p);
+	*p = NULL;
+}
+
+#undef free
+#define free(ptr) freeptr(&ptr)
+
 /* c END {{{ */
 #ifdef __cplusplus
 }
