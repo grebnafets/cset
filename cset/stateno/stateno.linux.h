@@ -32,9 +32,9 @@ __thread char *statenostr = NULL;
 
 void statenoreset()
 {
-	bad   = 0;
+	bad     = 0;
 	stateno = 0;
-	errno = 0;
+	errno   = 0;
 }
 
 void statenoerrno()
@@ -52,9 +52,9 @@ void statenoerrno()
 #endif
 }
 
-int is(int context)
+int is(int state)
 {
-	return context == stateno;
+	return state == stateno;
 }
 
 void (*segfault_handle)(void) = NULL;
