@@ -5,6 +5,30 @@
 #	@ ${CSET_SEARCH_PATH}/waste
 # Double check its contents with ls command and now you can safly use rm ;)
 
+for DIR in cset/*; do
+	ls ${DIR} | grep "\.h" | cut -d'.' -f 1 > tmpsh.tmp
+	CONTENTS=$(cat tmpsh.tmp)
+	CONTENTS=($CONTENTS)
+	cd cset
+	rm $CONTENTS.h
+	ln -s $CONTENTS/$CONTENTS.h $CONTENTS.h
+	cd ..
+	rm tmpsh.tmp
+done
+
+# Replace cntxt and badcontext with stateno
+#------------------------------------------------------------------------------
+#for FILE in $(find cset/* -name '*.c' -or -name '*.h' -or -name '*.cpp'); do
+#	#cat $FILE | grep "badcontext"
+#	sed -i 's/badcontext/stateno/g' $FILE
+#	#echo $FILE
+#done
+#for DIR in $(find cset/* -name '*.cpp'); do
+#	sed -i 's/cntxt/stateno/g' $DIR
+#done
+#for DIR in $(find cset/* -name '*.c' -or -name '*.h'); do
+#	sed -i 's/cntxt/stateno/g' $DIR
+#done
 # -----------------------------------------------------------------------------
 # Creating api directory under each sub under cset.
 #for DIR in cset/*; do

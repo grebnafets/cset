@@ -32,7 +32,7 @@ void *test_hashmap_array(void *arg __attribute__((unused)))
 	test(!strcmp(get1, "foo"));
 	test(!strcmp(get2, "bar"));
 	test(!bad);
-	test(!cntxt);
+	test(!stateno);
 
 	map.del("key1");
 	get1 = (char *)map.get("key1");
@@ -41,7 +41,7 @@ void *test_hashmap_array(void *arg __attribute__((unused)))
 	char *fail = (char *)map.get("foobar");
 	test(fail == NULL);
 	test(is(HASHMAP_KEY_NOT_FOUND));
-	cntxt = 0;
+	stateno = 0;
 	return NULL;
 }
 
@@ -58,7 +58,7 @@ void *test_hashmap_list(void *arg __attribute__((unused)))
 	test(!strcmp(get1, "foo"));
 	test(!strcmp(get2, "bar"));
 	test(!bad);
-	test(!cntxt);
+	test(!stateno);
 
 	map.del("key1");
 	get1 = (char *)map.get("key1");
@@ -67,6 +67,6 @@ void *test_hashmap_list(void *arg __attribute__((unused)))
 	char *fail = (char *)map.get("foobar");
 	test(fail == NULL);
 	test(is(HASHMAP_KEY_NOT_FOUND));
-	cntxt = 0;
+	stateno = 0;
 	return NULL;
 }

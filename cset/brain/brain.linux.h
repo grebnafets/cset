@@ -50,7 +50,7 @@ struct neuron *brain_find_neuron(struct neuron *n, unsigned char path)
 	}
 	if (index == -1) {
 		index = n->connected++;
-		n->path = (char *)mem.xr(
+		n->path = (unsigned char *)mem.xr(
 			n->path, n->connected * sizeof(char)
 		);
 		n->link = (struct neuron **)mem.xr(

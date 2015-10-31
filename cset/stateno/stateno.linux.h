@@ -23,38 +23,38 @@ extern "C" {
 
 #define BAD 1
 #define NOTBAD 0
-const int dummy_var__do_not_remove__ensures_cntxt_is_not_zero = __COUNTER__;
-__thread int cntxt = 0;
+const int dummy_var__do_not_remove__ensures_stateno_is_not_zero = __COUNTER__;
+__thread int stateno = 0;
 __thread int bad   = 0;
 #ifdef DEBUG
-__thread char *badcontextstr = NULL;
+__thread char *statenostr = NULL;
 #endif
 
-void cntxtreset()
+void statenoreset()
 {
 	bad   = 0;
-	cntxt = 0;
+	stateno = 0;
 	errno = 0;
 }
 
-void cntxterrno()
+void statenoerrno()
 {
 	int err = errno;
 	if (err > 0) {
 		err = -err;
 		bad = 1;
 	}
-	cntxt = err;
+	stateno = err;
 #ifdef DEBUG
-	if (badcontextstr != NULL) {
-		free(badcontextstr);
+	if (statenostr != NULL) {
+		free(statenostr);
 	}
 #endif
 }
 
 int is(int context)
 {
-	return context == cntxt;
+	return context == stateno;
 }
 
 void (*segfault_handle)(void) = NULL;
@@ -76,18 +76,18 @@ void segfault_sigaction(
 /* @fork {{{ */
 
 #if CAN_FORK
-void badcontext_atfork()
+void stateno_atfork()
 {
-	cntxt = 0;
+	stateno = 0;
 	bad   = 0;
 }
 #endif /* CAN_FORK */
 
-void badcontext_init() __attribute__((constructor));
-void badcontext_init()
+void stateno_init() __attribute__((constructor));
+void stateno_init()
 {
 #if CAN_FORK
-	pthread_atfork(NULL, NULL, &badcontext_atfork);
+	pthread_atfork(NULL, NULL, &stateno_atfork);
 #endif
 
 #if CAN_SIGACTION

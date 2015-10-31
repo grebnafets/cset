@@ -5,8 +5,8 @@ FLAGS=-std=gnu99 -pthread
 CC=gcc $(SEARCH_PATH)
 COMPILER=$(CC) $(FLAGS)
 
-dirs=test ts support badcontext mem f logger critical safefork assemblyline  \
-     threadwrapp hashmap charmap strh mat
+dirs=test ts support stateno mem f logger critical safefork assemblyline  \
+     threadwrapp hashmap charmap strh mat eularparse
 
 all: $(dirs)
 

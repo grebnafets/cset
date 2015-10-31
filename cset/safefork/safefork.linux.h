@@ -39,7 +39,7 @@ extern "C" {
 #include <unistd.h>
 #include <errno.h>
 #include <pthread.h>
-#include <cset/badcontext/badcontext.h>
+#include <cset/stateno/stateno.h>
 /* }}} */
 
 /* Profile layer {{{ */
@@ -120,7 +120,7 @@ pid_t fork_safe()
 	SAFEFORK_SPIN;
 	pid_t id = fork();
 	if (id == -1) {
-		cntxt = CONTEXT_BAD_FAILED_TO_CREATE_FORK;
+		stateno = CONTEXT_BAD_FAILED_TO_CREATE_FORK;
 		bad   = BAD;
 	}
 	PE;
@@ -144,7 +144,7 @@ void fork_cleanup()
 		w = wait(&status);
 		if (w == -1 && errno == ECHILD) {break;}
 		if (WIFEXITED(status) == 0 || WEXITSTATUS(status) != 0) {
-			cntxt = status;
+			stateno = status;
 			bad   = BAD + SAFEFORK_FORK_CLEANUP;
 			break;
 		}

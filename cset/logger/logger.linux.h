@@ -7,7 +7,7 @@ extern "C" {
 #endif /* __cplusplus */
 /* }}} */
 
-#include <cset/badcontext/badcontext.h>
+#include <cset/stateno/stateno.h>
 #include <cset/safefork/safefork.h>
 
 pthread_mutex_t logger_lock = PTHREAD_MUTEX_INITIALIZER;

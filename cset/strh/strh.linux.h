@@ -11,7 +11,7 @@ extern "C" {
  * Assumes UTF 8
  * */
 
-#include <cset/badcontext/badcontext.h>
+#include <cset/stateno/stateno.h>
 #include <cset/mem/mem.h>
 #include <cset/charmap/charmap.h>
 
@@ -105,7 +105,7 @@ size_t strh_utf8_width(const void *ch)
 	unsigned char *c = (unsigned char *)ch;
 	size_t i = 0;
 	if ((c[0] & 0xC0) == 0x80) {
-		cntxt = STRH_INVALID_CHAR_BYTE_ORIGIN;
+		stateno = STRH_INVALID_CHAR_BYTE_ORIGIN;
 		bad = 1;
 		/* Fall through intentional. Give warning and allow caller
 		 * to decite what to do.
@@ -157,7 +157,7 @@ void strh_put(void *subject, const void *object, size_t at)
 	size_t displ = 0;
 	/* Check vality of insert location. */
 	if (at > slen) {
-		cntxt = STRH_INVALID_STR_LOCATION;
+		stateno = STRH_INVALID_STR_LOCATION;
 		bad = 1;
 		goto OUT;
 	}

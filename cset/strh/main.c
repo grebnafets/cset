@@ -1,6 +1,6 @@
 #define SAFEFORK_HOOK
-#include <cset/safefork.h>
-#include <cset/test.h>
+#include <cset/safefork/safefork.h>
+#include <cset/test/test.h>
 #include <cset/strh/strh.h>
 
 void test_strh_create()
@@ -105,7 +105,7 @@ void test_strh_put()
 	strh.put(&foo, "not inserted", 200);
 	test(bad);
 	test(is(STRH_INVALID_STR_LOCATION));
-	cntxtreset();
+	statenoreset();
 	strh.put(&foo, "!", 5);
 	test(!strcmp((char *)foo, "again!, Hello world, we meet again!again"));
 	free(foo);

@@ -1,5 +1,5 @@
 #include <cset/test/test.h>
-#include <cset/badcontext/badcontext.h>
+#include <cset/stateno/stateno.h>
 
 /* Demo use. {{{  */
 
@@ -11,14 +11,14 @@ const int STATE_CHANGED = __COUNTER__;
 void setSHIT_HAPPENS()
 {
 	/* Check for something here? */
-	cntxt = SHIT_HAPPENS;
+	stateno = SHIT_HAPPENS;
 	bad   = 1;
 	/* Callback here maybe? */
 }
 void setSTATE_CHANGED()
 {
 	/* It doesn't have to be bad... */
-	cntxt = STATE_CHANGED;
+	stateno = STATE_CHANGED;
 }
 
 /* Set message or callback (This is up to you.) */
@@ -26,7 +26,7 @@ void setSTATE_CHANGED()
 /* }}} */
 
 /* tests {{{ */
-void test_badcontext()
+void test_stateno()
 {
 #define EQUALS ==
 /* just kidding <|;o) */
@@ -38,18 +38,18 @@ void test_badcontext()
 	/* Before SHIT_HAPPENS
 	 * Should also be true within threads or forks. */
 	test(bad == NOTBAD);
-	test(cntxt == 0);
+	test(stateno == 0);
 	setSHIT_HAPPENS();
 	/* After SHIT_HAPPENS */
-	test(cntxt == SHIT_HAPPENS);
+	test(stateno == SHIT_HAPPENS);
 	test(is(SHIT_HAPPENS));
-	test(cntxt > 0);
+	test(stateno > 0);
 	test(bad == BAD);
 	setSTATE_CHANGED();
 	/* After STATE_CHANGED */
-	test(cntxt == STATE_CHANGED);
+	test(stateno == STATE_CHANGED);
 	test(is(STATE_CHANGED));
-	test(cntxt > 0);
+	test(stateno > 0);
 }
 /* }}} */
 
@@ -58,7 +58,7 @@ void test_badcontext()
 /* thread setup {{{2 */
 void *thread(void *arg __attribute__((unused)))
 {
-	test_badcontext();
+	test_stateno();
 	return NULL;
 }
 /* }}}2 */
@@ -66,7 +66,7 @@ void *thread(void *arg __attribute__((unused)))
 void test_thread()
 {
 	pthread_t t;
-	test_badcontext();
+	test_stateno();
 	pthread_create(&t, NULL, &thread, NULL);
 	pthread_join(t, NULL);
 }
@@ -91,16 +91,16 @@ void test_with_fork_and_threads()
 
 void reset()
 {
-	cntxt = 0;
+	stateno = 0;
 	bad   = 0;
 }
 
 int main(int argc, char **argv)
 {
 	size_t mode = test_get_mode_from_arg(argc, argv);
-	test_set(mode, "badcontext");
+	test_set(mode, "stateno");
 
-	test_badcontext();
+	test_stateno();
 	reset();
 #ifdef CAN_FORK
 	test_with_fork_and_threads();

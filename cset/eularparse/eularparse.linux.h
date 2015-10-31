@@ -55,8 +55,8 @@
  * make the keyset. I will be able to tell the difference between "do" and
  * "done" without any special effort or lookahead condition. The look ahead
  * is simply automatic and doesn't require any states. As long as the keys
- * don't match, I can map them. I can also map the "formula" of the states
- * they might carry along with them.
+ * aren't duplicated, I can map them. I can also map the "formula" of the
+ * states they might carry along with them.
  *
  * While the struct is the essential part, there is bit more to this.
  * Another important step is about local and global management of memory using
@@ -178,11 +178,12 @@ void eularparse_link_info_mask(
 	size_t i, len;
 	struct neuron *link = NULL;
 	unsigned char buf[2] = {'\0'};
+	unsigned char tmp;
 	len = 256;
 	for (i = 0; i < len; i += 1) {
 		if (m[i]) {
 			memset(buf, '\0', 2);
-			sprintf(buf, "%c", i);
+			buf[0] = i;
 			link = brain_get_neuron(e->brain, buf);
 			link->data = (void *)info;
 		}
@@ -257,7 +258,7 @@ struct eularparse *new_eularparse(const void *sep)
 	e->info.list = NULL;
 	e->info.len = 0;
 	e->brain = brain_create_neuron();
-	e->sep = strh_create(sep);
+	e->sep = (unsigned char *)strh_create(sep);
 	return e;
 }
 /* }}} */
@@ -308,17 +309,17 @@ void eularparse_push(struct eularparse *e, const void *name, size_t isnew)
 	if (!isnew && index != 0) {
 		eold = e->stack.data[index - 1];
 		size = strlen((char *)eold.name);
-		size += strlen(n);
+		size += strlen((char *)n);
 		size += strlen((char *)e->sep);
 		size += 1;
-		enew.name = mem.xc(size, sizeof(char));
+		enew.name = (unsigned char *)mem.xc(size, sizeof(char));
 		strcpy((char *)enew.name, (char *)eold.name);
-		strcat((char *)enew.name, e->sep);
+		strcat((char *)enew.name, (char *)e->sep);
 		strcat((char *)enew.name, (char *)n);
-		enew.base = strh_create(enew.name);
+		enew.base = (unsigned char *)strh_create(enew.name);
 	} else {
-		enew.name = strh_create(n);
-		enew.base = strh_create(n);
+		enew.name = (unsigned char *)strh_create(n);
+		enew.base = (unsigned char *)strh_create(n);
 	}
 	enew.info = NULL;
 	enew.n = 0;
@@ -366,13 +367,13 @@ void eularparse_increment(struct eularparse *e)
 	free(top->name);
 	nlen = strlen(id);
 	blen = strlen((char *)top->base);
-	seplen = strlen(e->sep);
+	seplen = strlen((char *)e->sep);
 	top->name = (unsigned char *)mem.xc(
 		(blen + seplen + nlen + 1), sizeof(char)
 	);
-	strcpy(top->name, top->base);
-	strcat(top->name, e->sep);
-	strcat(top->name, id);
+	strcpy((char *)top->name, (char *)top->base);
+	strcat((char *)top->name, (char *)e->sep);
+	strcat((char *)top->name, (char *)id);
 }
 /* }}} */
 

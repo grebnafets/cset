@@ -107,7 +107,7 @@ void *test_hashmap_array1(void *arg __attribute__((unused)))
 	}	
 
 	test(!bad);
-	test(!cntxt);
+	test(!stateno);
 
 	char *foo = (char *)"foo";
 	char *bar = (char *)"bar";
@@ -119,7 +119,7 @@ void *test_hashmap_array1(void *arg __attribute__((unused)))
 	test(!strcmp(get1, "foo"));
 	test(!strcmp(get2, "bar"));
 	test(!bad);
-	test(!cntxt);
+	test(!stateno);
 
 	hashmap_del(map, "keyfoo");
 	get1 = (char *)hashmap_get(map, "keyfoo");
@@ -128,7 +128,7 @@ void *test_hashmap_array1(void *arg __attribute__((unused)))
 	char *fail = (char *)hashmap_get(map, "foobar");
 	test(fail == NULL);
 	test(is(HASHMAP_KEY_NOT_FOUND));
-	cntxt = 0;
+	stateno = 0;
 
 	free_pairs(p);
 	hashmap_free(map);
@@ -196,7 +196,7 @@ void *test_hashmap_list(void *arg __attribute__((unused)))
 	test(!strcmp(get1, "foo"));
 	test(!strcmp(get2, "bar"));
 	test(!bad);
-	test(!cntxt);
+	test(!stateno);
 
 	hashmap_del(map, "key1");
 	get1 = (char *)hashmap_get(map, "key1");
@@ -205,7 +205,7 @@ void *test_hashmap_list(void *arg __attribute__((unused)))
 	char *fail = (char *)hashmap_get(map, "foobar");
 	test(fail == NULL);
 	test(is(HASHMAP_KEY_NOT_FOUND));
-	cntxt = 0;
+	stateno = 0;
 
 	hashmap_free(map);
 	return NULL;

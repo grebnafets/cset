@@ -7,7 +7,7 @@ extern "C" {
 #endif /* __cplusplus */
 /* }}} */
 
-#include <cset/badcontext/badcontext.h>
+#include <cset/stateno/stateno.h>
 #include <cset/mem/mem.h>
 #include <string.h>
 #include <pthread.h>
@@ -134,12 +134,12 @@ struct hashmap *hashmap_create(size_t size, HASHMAP_FUNCTION hash, size_t type)
 	case HASHMAP_LIST: break;
 	default:
 		bad = 1;
-		cntxt = HASHMAP_INVALID_TYPE;
+		stateno = HASHMAP_INVALID_TYPE;
 		goto OUT;
 	}
 	if (!hashmap_is_size_valid(size)) {
 		bad = 1;
-		cntxt = HASHMAP_INVALID_SIZE;
+		stateno = HASHMAP_INVALID_SIZE;
 		goto OUT;
 	}
 	map = (struct hashmap *)mem.xm(sizeof(struct hashmap));
@@ -336,7 +336,7 @@ void hashmap_put_array(struct hashmap *map, const void *key, void *val)
 				empty  = 1;
 				emptyi = i;	
 			} else if (!strcmp(bucket->key[i], k)) {
-				cntxt = HASHMAP_KEY_EXISTS;
+				stateno = HASHMAP_KEY_EXISTS;
 				goto OUT;
 			}
 		}
@@ -403,7 +403,7 @@ void hashmap_put_list(struct hashmap *map, const void *key, void *val)
 	}
 	while (1) {
 		if (!strcmp(list->key, k)) {
-			cntxt = HASHMAP_KEY_EXISTS;
+			stateno = HASHMAP_KEY_EXISTS;
 			goto OUT;
 		}
 		if (list->next == NULL) {
@@ -472,7 +472,7 @@ void *hashmap_get_array(struct hashmap *map, const void *key)
 		}
 	}
 	if (ret == NULL) {
-		cntxt = HASHMAP_KEY_NOT_FOUND;
+		stateno = HASHMAP_KEY_NOT_FOUND;
 	}
 	return ret;
 }
@@ -505,7 +505,7 @@ void *hashmap_get_list(struct hashmap *map, const void *key)
 		list = list->next;
 	}
 	if (ret == NULL) {
-		cntxt = HASHMAP_KEY_NOT_FOUND;
+		stateno = HASHMAP_KEY_NOT_FOUND;
 	}
 	return ret;
 }

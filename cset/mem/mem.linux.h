@@ -70,7 +70,7 @@ size_t msizeof(void *ptr)
 		}
 	}
 	if (ret == 0 && i == len) {
-		cntxt = CONTEXT_MEMORY_ADDRESS_NOT_FOUND;
+		stateno = CONTEXT_MEMORY_ADDRESS_NOT_FOUND;
 	}
 	return ret;
 }
