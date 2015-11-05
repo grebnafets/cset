@@ -153,7 +153,7 @@ void *test_hashmap_array2(void *arg __attribute__((unused)))
 		test(!strcmp(result, p->vals[i]));
 	}	
 
-	fprintf(stdout, "Random key collisions len=K1 : %lu\n", map->collision);
+	//fprintf(stdout, "Random key collisions len=K1 : %lu\n", map->collision);
 	free_pairs(p);
 	hashmap_free(map);
 	return NULL;
@@ -177,7 +177,7 @@ void *test_hashmap_array3(void *arg __attribute__((unused)))
 		test(!strcmp(result, p->vals[i]));
 	}	
 
-	fprintf(stdout, "Collisions len=K1 : %lu\n", map->collision);
+	//fprintf(stdout, "Collisions len=K1 : %lu\n", map->collision);
 	free_pairs(p);
 	hashmap_free(map);
 	return NULL;

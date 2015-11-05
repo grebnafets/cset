@@ -50,6 +50,6 @@ void test_assemblyline()
 int main(int argc, char **argv)
 {
 	size_t mode = test_get_mode_from_arg(argc, argv);
-	test_set(mode);
+	test_set(mode, "assemblyline");
 	test_assemblyline();
 }

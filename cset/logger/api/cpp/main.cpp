@@ -31,6 +31,6 @@ void test_logger()
 int main(int argc, char **argv)
 {
 	size_t mode = test_get_mode_from_arg(argc, argv);
-	test_set(mode);
+	test_set(mode, "logger");
 	test_logger();
 }

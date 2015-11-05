@@ -6,7 +6,7 @@ void test_flen_safe()
 {
 	FILE *f = NULL;
 	size_t len = 0;
-	f = fopen("f.txt", "r");
+	f = fopen("testfiles/f.txt", "r");
 	len = flen_safe(f);
 	test(len == 13);
 	fclose(f);
@@ -16,7 +16,7 @@ void test_flen_fseek()
 {
 	FILE *f = NULL;
 	size_t len = 0;
-	f = fopen("f.txt", "r");
+	f = fopen("testfiles/f.txt", "r");
 	len = flen_fseek(f);
 	test(len == 13);
 	fclose(f);
@@ -28,7 +28,7 @@ void test_flen()
 	test_flen_fseek();
 	FILE *f = NULL;
 	size_t len = 0;
-	f = fopen("f.txt", "r");
+	f = fopen("testfiles/f.txt", "r");
 	len = flen(f);
 	test(len == 13);
 	fclose(f);
@@ -37,7 +37,7 @@ void test_flen()
 
 void test_fget()
 {
-	char *result = (char *)fget("f.txt");
+	char *result = (char *)fget("testfiles/f.txt");
 	const char *expected = "this is file\n";
 	test(!strcmp(expected, result));
 	free(result);

@@ -1,7 +1,7 @@
 #include <cset/test/test.h>
 #include <cset/stateno/stateno.h>
 
-/* Demo use. {{{  */
+/* Demoi use. {{{  */
 
 /* Context definition, what we really care about. */
 const int SHIT_HAPPENS  = __COUNTER__;
@@ -25,7 +25,7 @@ void setSTATE_CHANGED()
 
 /* }}} */
 
-/* tests {{{ */
+/*i tests {{{ */
 void test_stateno()
 {
 #define EQUALS ==
@@ -55,7 +55,7 @@ void test_stateno()
 
 /* test cases for thread and fork {{{1 */
 
-/* thread setup {{{2 */
+/* thiread setup {{{2 */
 void *thread(void *arg __attribute__((unused)))
 {
 	test_stateno();
@@ -76,10 +76,14 @@ void test_with_fork_and_threads()
 #define CHILD 0
 	pid_t id = fork();
 	if (id == CHILD) {
-		fprintf(stdout, "Child process\n");
+		if (test_mode_is(TEST_SHOW_SUCCESS) || test_mode_is(TEST_SHOW_FAILURE)) {
+			fprintf(stdout, "Child process\n");
+		}
 		test_thread();
 	} else {
-		fprintf(stdout, "Parent process\n");
+		if (test_mode_is(TEST_SHOW_SUCCESS) || test_mode_is(TEST_SHOW_FAILURE)) {
+			fprintf(stdout, "Parent process\n");
+		}
 		test_thread();
 	}
 	int status;

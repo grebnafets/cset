@@ -76,10 +76,14 @@ void test_with_fork_and_threads()
 #define CHILD 0
 	pid_t id = fork();
 	if (id == CHILD) {
-		fprintf(stdout, "Child process\n");
+		if (test_mode_is(TEST_SHOW_SUCCESS) || test_mode_is(TEST_SHOW_FAILURE))  {
+			fprintf(stdout, "Child process\n");
+		}
 		test_thread();
 	} else {
-		fprintf(stdout, "Parent process\n");
+		if (test_mode_is(TEST_SHOW_SUCCESS) || test_mode_is(TEST_SHOW_FAILURE))  {
+			fprintf(stdout, "Parent process\n");
+		}
 		test_thread();
 	}
 	int status;
