@@ -1,22 +1,22 @@
-#ifndef TEST
-#define TEST
+#ifndef CSET_TEST
+#define CSET_TEST 1
 
-/* c START {{{ */
+// C++<- {{{
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
-/* }}} */
-
-#ifdef __unix__
-#include <cset/test/test.linux.h>
-#else
-/* TODO: Testing testing. */
 #endif
+// }}}
 
-/* c END {{{ */
+#include <cset/test/test.cp-pre.h>
+#ifdef __unix__
+	#include <cset/test/test.linux.h>
+#endif
+#include <cset/test/test.cp-post.h>
+
+// <-C++ {{{
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
-/* }}} */
+#endif
+// }}}
 
-#endif /* TEST */
+#endif // CSET_TEST
