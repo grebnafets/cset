@@ -32,13 +32,13 @@ struct cset_test_Case {
 
 struct cset_test_Data {
 	char *name;
-	char *filename;
 	size_t mode;
 	size_t success;
 	size_t total;
 	struct cset_test_Case **cases;
 };
 
+// Prepare memory for data {{{
 char *
 cset_test_malloc_data
 (char *err, struct cset_test_Data **data)
@@ -67,7 +67,6 @@ cset_test_init_data
 		return err;
 	}
 	data->name = NULL;
-	data->filename = NULL;
 	data->mode = 0;
 	data->total = 0;
 	data->success = 0;
@@ -75,7 +74,9 @@ cset_test_init_data
 CSET_TEST_POST
 	return err;
 }
+// }}}
 
+// Prepare memory for cases {{{
 char *
 cset_test_realloc_cases
 (char *err, struct cset_test_Case ***cases, size_t count)
@@ -129,9 +130,9 @@ cset_test_init_case
 CSET_TEST_POST
 	return err;
 }
+// }}}
 
-
-
+// String handling {{{
 char *
 cset_test_strcpy
 (char *err, char **dstname, const char *srcname)
@@ -157,12 +158,14 @@ cset_test_strcpy
 CSET_TEST_POST
 	return err;
 }
+// }}}
 
+// Case creation {{{
 char *
 cset_test_add_case
 (
  	char *err,
-	char *filename,
+	const char *filename,
 	const char *funcname,
 	int line,
 	const char *testname,
@@ -176,6 +179,7 @@ cset_test_add_case
 	}
 	err = cset_test_malloc_case(err, testCase);
 	err = cset_test_init_case(err, *testCase);
+	err = cset_test_strcpy(err, &(*testCase)->filename, filename);
 	err = cset_test_strcpy(err, &(*testCase)->funcname, funcname);
 	err = cset_test_strcpy(err, &(*testCase)->testname, testname);
 	err = cset_test_strcpy(err, &(*testCase)->description, description);
@@ -186,17 +190,19 @@ cset_test_add_case
 		seterr("Could not determine filename.");
 		return err;
 	}
-	(*testCase)->filename = filename;
 	(*testCase)->line = line;
 	(*testCase)->result = result;
 CSET_TEST_POST
 	return err;
 }
+// }}}
 
+// Run test and prepare results {{{
 char *
 cset_test_Run
 (
  	char *err,
+	const char *filename,
 	const char *funcname,
 	int line,
 	const char *testname,
@@ -212,11 +218,10 @@ cset_test_Run
 	err = cset_test_realloc_cases(err, &data->cases, data->total);
 	err = cset_test_add_case(
 		err,
-		data->filename, funcname, line,
+		filename, funcname, line,
 		testname, description, result,
 		&data->cases[index]
 	);
-	printf("filename=%s\n", data->cases[index]->filename);
 	if (data->cases[index]->result) {
 		data->success++;
 	}
@@ -225,17 +230,17 @@ CSET_TEST_POST
 }
 
 #ifndef test
-	#define test(err, cond, desc, data) cset_test_Run(err, __func__, __LINE__, #cond, desc, cond, data)
+	#define test(err, cond, desc, data) cset_test_Run(err, __FILE__, __func__, __LINE__, #cond, desc, cond, data)
 #endif
+// }}}
 
-
+// New {{{
 char *
 cset_test_New
 (CSET_TEST_PRE
  	char *err,
 	const char *name,
 	size_t mode,
-	const char *filename,
 	struct cset_test_Data **data
 )
 {
@@ -245,12 +250,13 @@ cset_test_New
 	err = cset_test_malloc_data(err, data);
 	err = cset_test_init_data(err, *data);
 	err = cset_test_strcpy(err, &(*data)->name, name);
-	err = cset_test_strcpy(err, &(*data)->filename, filename);
 	(*data)->mode = mode;
 CSET_TEST_POST
 	return err;
 }
+// }}}
 
+// Cleanup {{{
 char *
 cset_test_Fini
 (char *err, struct cset_test_Data **data)
@@ -259,20 +265,19 @@ cset_test_Fini
 		return err;
 	}
 	while ((*data)->total--) {
+		free((*data)->cases[(*data)->total]->filename);
 		free((*data)->cases[(*data)->total]->funcname);
 		free((*data)->cases[(*data)->total]->testname);
 		free((*data)->cases[(*data)->total]->description);
 		free((*data)->cases[(*data)->total]);
 	}
 	free((*data)->name);
-	free((*data)->filename);
 	free((*data)->cases);
 	free(*data);
 	*data = NULL;
 CSET_TEST_POST
 	return err;
 }
-
-
+// }}}
 
 #endif // CSET_TEST_CROSS_PLATFORM_PRE
