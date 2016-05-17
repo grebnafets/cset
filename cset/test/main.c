@@ -1,26 +1,45 @@
+#include <stdio.h>
 #include <stdlib.h>
+//#define CSET_TEST_PRE printf("%s\n", __func__);
+//#define CSET_TEST_POST printf("%s\n", __func__);
 #include <cset/test/test.h>
+
+// Example use.
+
+void foo() {
+	struct cset_test_Data *foo = NULL;
+	char *err = NULL;
+	err = cset_test_New(err, "foo", CSET_TEST_MODE_SHOW_SHEBANG, &foo);
+	err = test(err, 1 == 1, "One equals one", foo);
+	err = test(err, 1 == 2, "One equals two", foo);
+	err = cset_test_SetFGSuccess(err, 10, 255, 10, 0, foo);
+	err = cset_test_SetBGSuccess(err, 100, 10, 100, 0, foo);
+	err = cset_test_SetFGFailure(err, 255, 10, 10, 0, foo);
+	err = cset_test_SetBGFailure(err, 10, 100, 100, 0, foo);
+	err = cset_test_Display(err, foo);
+	err = cset_test_Fini(err, &foo);
+	if (err != NULL) {
+		fprintf(stderr, "%s\n", err);
+	}
+}
+
+void bar() {
+	struct cset_test_Data *bar = NULL;
+	char *err = NULL;
+	err = cset_test_New(err, "foo", CSET_TEST_MODE_SHOW_FAILURE, &bar);
+	err = test(err, 1 == 1, "One equals one", bar);
+	err = test(err, 1 == 2, "One equals two", bar);
+	err = cset_test_SetFGFailure(err, 254, 254, 254, 0, bar);
+	err = cset_test_Display(err, bar);
+	err = cset_test_Fini(err, &bar);
+	if (err != NULL) {
+		fprintf(stderr, "%s\n", err);
+	}
+}
 
 int main(int argc, char **argv)
 {
-	struct cset_test_Data *testData = NULL;
-	char *err = NULL;
-	err = cset_test_New(err, "foo", 7, &testData);
-	printf("%d\n", err);
-	printf("%s:%d\n", testData->name, testData->mode);
-	test(err, 1 == 1, "foobar", testData);
-	if (err != NULL) {
-		printf("%s\n", err);
-	}
-	printf("test data total == %d\n", testData->total);
-	printf("test data success == %d\n", testData->success);
-	printf("test case desc: %s\n", testData->cases[0]->description);
-	err = cset_test_Fini(err, &testData);
-	if (testData == NULL) {
-		printf("t is NULL\n");
-	}
-	if (err != NULL) {
-		printf("%s\n", err);
-	}
+	bar();
+	foo();
 	return EXIT_SUCCESS;
 }

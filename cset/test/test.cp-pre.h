@@ -1,16 +1,41 @@
 #ifndef CSET_TEST_CROSS_PLATFORM_PRE
 #define CSET_TEST_CROSS_PLATFORM_PRE 1
 
-#define EQU ==
-#define NOT !=
-#define LTE <=
-#define GTE >=
-#define LT <
-#define GT >
+#define CSET_TEST_MODE_SHOW_SUCCESS (size_t)1
+#define CSET_TEST_MODE_SHOW_FAILURE (size_t)2
+#define CSET_TEST_MODE_SHOW_MESSAGE (size_t)4
+#define CSET_TEST_MODE_SHOW_SHEBANG (size_t)7
 
-#include <stdio.h>
-#include <string.h>
+struct cset_test_case {
+	int line;
+	char *filename;
+	char *funcname;
+	char *testname; // 1==1 => "1==1", condition preproccessed to str.
+	char *description;
+	size_t result;  // 1 or 0 (true or false)
+};
 
+struct cset_test_Data {
+	char *name;          // Name of the test bundle.
+	size_t mode;         // Show {0:nothing, 1:success, 2:failure, 4:msg}
+	size_t success;      // Total number of successful cases.
+	size_t total;        // Total cases.
+	struct cset_test_Data_bg {
+		unsigned char success[5]; // {isset, r, g, b, a} a is not supported.
+		unsigned char failure[5]; // {isset, r, g, b, a} a is not supported.
+		unsigned char result[5];  // {isset, r, g, b, a} a is not supported.
+	} bg;
+	struct cset_test_Data_fg {
+		unsigned char success[5]; // {isset, r, g, b, a} a is not supported.
+		unsigned char failure[5]; // {isset, r, g, b, a} a is not supported.
+		unsigned char result[5];  // {isset, r, g, b, a} a is not supported.
+	} fg;
+	struct cset_test_case **cases;
+};
+
+// Possible hooks for every function and do while macro.
+// You can test this with #define CSET_TEST_PRE printf("%s\n", __func__);
+// Add it _before_ you add test.h
 #ifndef CSET_TEST_PRE
 	#define CSET_TEST_PRE
 #endif
@@ -18,266 +43,113 @@
 	#define CSET_TEST_POST
 #endif
 
-char cset_test_error[1024];
-#define seterr(desc) sprintf(cset_test_error, "%d:%s:%s", __LINE__, __func__, desc); err = cset_test_error
-
-struct cset_test_Case {
-	int line;
-	char *filename;
-	char *funcname;
-	char *testname;
-	char *description;
-	size_t result;
-};
-
-struct cset_test_Data {
-	char *name;
-	size_t mode;
-	size_t success;
-	size_t total;
-	struct cset_test_Case **cases;
-};
-
-// Prepare memory for data {{{
-char *
-cset_test_malloc_data
-(char *err, struct cset_test_Data **data)
-{CSET_TEST_PRE
-	if (err != NULL) {
-		return err;
-	}
-	if (*data != NULL) {
-		seterr("Struct parameter is not initialized with NULL.");
-		return err;
-	}
-	*data = malloc(sizeof(struct cset_test_Data));
-	if (*data == NULL) {
-		seterr("Allocation failure.");
-		return err;
-	}
-CSET_TEST_POST
-	return err;
-}
-
-char *
-cset_test_init_data
-(char *err, struct cset_test_Data *data)
-{CSET_TEST_PRE
-	if (err != NULL) {
-		return err;
-	}
-	data->name = NULL;
-	data->mode = 0;
-	data->total = 0;
-	data->success = 0;
-	data->cases = NULL;
-CSET_TEST_POST
-	return err;
-}
+// dependency {{{
+#include <time.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 // }}}
 
-// Prepare memory for cases {{{
-char *
-cset_test_realloc_cases
-(char *err, struct cset_test_Case ***cases, size_t count)
+// err {{{
+static char *
+_cset_test_err(const char *desc, const char *func, int line)
 {CSET_TEST_PRE
-	if (err != NULL) {
+	char *err = NULL;
+	size_t len = strlen(desc)+128;
+	if (len == 0 || len > 9000 || line <= 0 || strlen(func) > 9000) {
+		// Will only run if you are not being nice.
+		err = calloc(strlen("ErrLvOver9000")+128, sizeof(char));
+		if (err == NULL) {
+			fprintf(stderr, "ENOMEM\n");
+			fflush(stderr);
+			abort();
+		}
+		sprintf(err, "%d:%s", line, "ErrLvOver9000");
 		return err;
 	}
-	size_t size = sizeof(struct cset_test_Case) * count;
-	*cases = realloc(*cases, size);
-	if (*cases == NULL) {
-		seterr("Allocation failure.");
-	}
-	(*cases)[count-1] = NULL;
+	char tmp[len];
+	memset(tmp, '\0', len);
+	sprintf(tmp, "%d:%s:%s", line, func, desc);
+	len = strlen(tmp)+1;
+	err = calloc(len, sizeof(char));
+	strncpy(err, tmp, len);
 CSET_TEST_POST
 	return err;
 }
-
-char *
-cset_test_malloc_case
-(char *err, struct cset_test_Case **testCase)
-{CSET_TEST_PRE
-	if (err != NULL) {
-		return err;
-	}
-	if (*testCase != NULL) {
-		seterr("Struct parameter is not initialized with NULL.");
-		return err;
-	}
-	*testCase = malloc(sizeof(struct cset_test_Case));
-	if (*testCase == NULL) {
-		seterr("Allocation failure.");
-		return err;
-	}
-CSET_TEST_POST
-	return err;
-}
-
-char *
-cset_test_init_case
-(char *err, struct cset_test_Case *testCase)
-{CSET_TEST_PRE
-	if (err != NULL) {
-		return err;
-	}
-	testCase->line = 0;
-	testCase->filename = NULL;
-	testCase->funcname = NULL;
-	testCase->testname = NULL;
-	testCase->description = NULL;
-	testCase->result = 0;
-CSET_TEST_POST
-	return err;
-}
+#define cset_test_err(desc) _cset_test_err(desc, __func__, __LINE__)
 // }}}
 
-// String handling {{{
-char *
-cset_test_strcpy
-(char *err, char **dstname, const char *srcname)
-{CSET_TEST_PRE
-	if (err != NULL) {
-		return err;
-	}
-	if (*dstname != NULL) { 
-		seterr("Destination name is not initialized with NULL.");
-		return err;
-	}
-	int len = strlen(srcname);
-	if (len == 0) {
-		seterr("Missing source name.");
-		return err;
-	}
-	*dstname = calloc(len+1, sizeof(char));
-	if (*dstname == NULL) {
-		seterr("Allocation failure.");
-		return err;
-	}
-	strncpy(*dstname, srcname, len);
-CSET_TEST_POST
-	return err;
-}
-// }}}
+// Experimental toy to guard memory for malloc, calloc, realloc and free.
+// {{{
+static volatile int cset_test_atomic_gate_memory = 0;
 
-// Case creation {{{
-char *
-cset_test_add_case
-(
- 	char *err,
-	const char *filename,
-	const char *funcname,
-	int line,
-	const char *testname,
-	const char *description,
-	size_t result,
-	struct cset_test_Case **testCase
-)
+static inline void
+cset_test_atomic_open
+(volatile int *gate)
 {CSET_TEST_PRE
-	if (err != NULL) {
-		return err;
-	}
-	err = cset_test_malloc_case(err, testCase);
-	err = cset_test_init_case(err, *testCase);
-	err = cset_test_strcpy(err, &(*testCase)->filename, filename);
-	err = cset_test_strcpy(err, &(*testCase)->funcname, funcname);
-	err = cset_test_strcpy(err, &(*testCase)->testname, testname);
-	err = cset_test_strcpy(err, &(*testCase)->description, description);
-	if (err != NULL) {
-		return err;
-	}
-	if (filename == NULL || strlen(filename) == 0) {
-		seterr("Could not determine filename.");
-		return err;
-	}
-	(*testCase)->line = line;
-	(*testCase)->result = result;
-CSET_TEST_POST
-	return err;
-}
-// }}}
-
-// Run test and prepare results {{{
-char *
-cset_test_Run
-(
- 	char *err,
-	const char *filename,
-	const char *funcname,
-	int line,
-	const char *testname,
-	const char *description,
-	size_t result,
-	struct cset_test_Data *data
-)
-{CSET_TEST_PRE
-	if (err != NULL) {
-		return err;
-	}
-	size_t index = data->total++;
-	err = cset_test_realloc_cases(err, &data->cases, data->total);
-	err = cset_test_add_case(
-		err,
-		filename, funcname, line,
-		testname, description, result,
-		&data->cases[index]
+	asm volatile (
+		"jmp check\n"                  // Jump to gate.
+		"wait:\n"                      // Your spawning point.
+		"pause\n"                      // Stroke your beard. (If you have one.)
+		"check:\n"                     // Clean your glasses.
+		"cmp %[open], %[gate]\n"       // Check if gate is open.
+		"jne wait\n"                   // If it isn't open, wait. If it is open, go through the gate.
+		"lock xadd %[lock], %[gate]\n" // If more then one entered through the gate at the same time, try to be the first one to put the lock.
+		"cmp %[lock], %[open]\n"       // Check to see you where the one who put the lock first.
+		// "If you lost, consider thug life..."
+		"jne wait\n"                   // If you didn't win, respawn and try again later.
+		: [gate] "=m" (*gate)
+		: [lock] "r" (1), [open] "r" (0)
 	);
-	if (data->cases[index]->result) {
-		data->success++;
-	}
 CSET_TEST_POST
-	return err;
 }
 
-#ifndef test
-	#define test(err, cond, desc, data) cset_test_Run(err, __FILE__, __func__, __LINE__, #cond, desc, cond, data)
-#endif
-// }}}
-
-// New {{{
-char *
-cset_test_New
-(CSET_TEST_PRE
- 	char *err,
-	const char *name,
-	size_t mode,
-	struct cset_test_Data **data
-)
-{
-	if (err != NULL) {
-		return err;
-	}
-	err = cset_test_malloc_data(err, data);
-	err = cset_test_init_data(err, *data);
-	err = cset_test_strcpy(err, &(*data)->name, name);
-	(*data)->mode = mode;
-CSET_TEST_POST
-	return err;
-}
-// }}}
-
-// Cleanup {{{
-char *
-cset_test_Fini
-(char *err, struct cset_test_Data **data)
+static inline void
+cset_test_atomic_close
+(volatile int *gate)
 {CSET_TEST_PRE
-	if (err != NULL) {
-		return err;
-	}
-	while ((*data)->total--) {
-		free((*data)->cases[(*data)->total]->filename);
-		free((*data)->cases[(*data)->total]->funcname);
-		free((*data)->cases[(*data)->total]->testname);
-		free((*data)->cases[(*data)->total]->description);
-		free((*data)->cases[(*data)->total]);
-	}
-	free((*data)->name);
-	free((*data)->cases);
-	free(*data);
-	*data = NULL;
+	asm volatile (
+		"pause\n"
+		"lock xchg %[lock], %[gate]\n"
+		: [gate] "=m" (*gate)
+		: [lock] "r" (0)
+	);
 CSET_TEST_POST
-	return err;
 }
+
+static void *cset_test_malloc(size_t size)
+{
+	cset_test_atomic_open(&cset_test_atomic_gate_memory);
+	void *mem = malloc(size);
+	cset_test_atomic_close(&cset_test_atomic_gate_memory);
+	return mem;
+}
+
+static void *cset_test_calloc(size_t n, size_t size)
+{
+	cset_test_atomic_open(&cset_test_atomic_gate_memory);
+	void *mem = calloc(n, size);
+	cset_test_atomic_close(&cset_test_atomic_gate_memory);
+	return mem;
+}
+
+static void *cset_test_realloc(void *ptr, size_t size)
+{
+	cset_test_atomic_open(&cset_test_atomic_gate_memory);
+	void *mem = realloc(ptr, size);
+	cset_test_atomic_close(&cset_test_atomic_gate_memory);
+	return mem;
+}
+
+static void cset_test_free(void *ptr)
+{
+	cset_test_atomic_open(&cset_test_atomic_gate_memory);
+	free(ptr);
+	cset_test_atomic_close(&cset_test_atomic_gate_memory);
+}
+
 // }}}
 
 #endif // CSET_TEST_CROSS_PLATFORM_PRE
