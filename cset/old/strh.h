@@ -1,1 +1,0 @@
-strh/strh.h
