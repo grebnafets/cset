@@ -90,18 +90,17 @@ cset_test_atomic_open
 (volatile int *gate)
 {CSET_TEST_PRE
 	asm volatile (
-		"jmp check\n"                  // Jump to gate.
-		"wait:\n"                      // Your spawning point.
-		"pause\n"                      // Stroke your beard. (If you have one.)
-		"check:\n"                     // Clean your glasses.
-		"cmp %[open], %[gate]\n"       // Check if gate is open.
-		"jne wait\n"                   // If it isn't open, wait. If it is open, go through the gate.
-		"lock xadd %[lock], %[gate]\n" // If more then one entered through the gate at the same time, try to be the first one to put the lock.
-		"cmp %[lock], %[open]\n"       // Check to see you where the one who put the lock first.
-		// "If you lost, consider thug life..."
-		"jne wait\n"                   // If you didn't win, respawn and try again later.
+		"jmp check\n"                // Renegade selected, lets skip the line!
+		"wait:\n"                    // Honest citizens wait in line.
+		"pause\n"                    // Stroke beard, check phone/watch.
+		"check:\n"                   // Ok, lets do this...
+		"mov %[lock], %%eax\n"       // eax = 1
+		"lock xchg %%eax, %[gate]\n" // Exhange eax with gate value.
+		"test %%eax, %%eax\n"        // 1 = closed, 0 = open.
+		"jnz wait\n"                 // Ohhh man, here I go again...
 		: [gate] "=m" (*gate)
-		: [lock] "r" (1), [open] "r" (0)
+		: [lock] "r" (1)
+		: "eax"                      // Inform compiler you want eax.
 	);
 CSET_TEST_POST
 }
@@ -111,10 +110,9 @@ cset_test_atomic_close
 (volatile int *gate)
 {CSET_TEST_PRE
 	asm volatile (
-		"pause\n"
-		"lock xchg %[lock], %[gate]\n"
+		"mov %[unlock], %[gate]\n"
 		: [gate] "=m" (*gate)
-		: [lock] "r" (0)
+		: [unlock] "r" (0)
 	);
 CSET_TEST_POST
 }
