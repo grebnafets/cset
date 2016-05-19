@@ -228,6 +228,7 @@ cset_test_set_bg(
 	if (err != NULL) {
 		return err;
 	}
+	// Prevent memory overlapping with a buffer.
 	size_t len = strlen(text);
 	char buffer[len+1];
 	memset(buffer, '\0', len+1);
@@ -251,6 +252,7 @@ cset_test_set_fg(
 	if (err != NULL) {
 		return err;
 	}
+	// Prevent memory overlapping with a buffer.
 	size_t len = strlen(text);
 	char buffer[len+1];
 	memset(buffer, '\0', len+1);
