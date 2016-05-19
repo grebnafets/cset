@@ -8,9 +8,20 @@ extern "C" {
 // }}}
 
 #include <cset/test/test.cp-pre.h>
+/*
+#ifdef __APPLE__
+	#include <cset/test/test.apple.h>
+#endif
+#ifdef __WIN32__
+	#include <cset/test/test.win32.h>
+#endif
 #ifdef __unix__
+	#include <cset/test/test.unix.h>
+#endif
+#ifdef __linux__
 	#include <cset/test/test.linux.h>
 #endif
+*/
 #include <cset/test/test.cp-post.h>
 
 // <-C++ {{{

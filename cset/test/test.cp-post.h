@@ -3,7 +3,7 @@
 
 // Prepare memory for data {{{
 static char *
-cset_test_malloc_data
+cset_test_cset_test_malloc_data
 (char *err, struct cset_test_Data **data)
 {CSET_TEST_PRE
 	if (err != NULL) {
@@ -13,7 +13,7 @@ cset_test_malloc_data
 		err = cset_test_err("Struct parameter is not initialized with NULL.");
 		return err;
 	}
-	*data = malloc(sizeof(struct cset_test_Data));
+	*data = cset_test_malloc(sizeof(struct cset_test_Data));
 	if (*data == NULL) {
 		err = cset_test_err("Allocation failure.");
 		return err;
@@ -47,14 +47,14 @@ CSET_TEST_POST
 
 // Prepare memory for cases {{{
 static char *
-cset_test_realloc_cases
+cset_test_cset_test_realloc_cases
 (char *err, struct cset_test_case ***cases, size_t count)
 {CSET_TEST_PRE
 	if (err != NULL) {
 		return err;
 	}
 	size_t size = sizeof(struct cset_test_case) * count;
-	*cases = realloc(*cases, size);
+	*cases = cset_test_realloc(*cases, size);
 	if (*cases == NULL) {
 		err = cset_test_err("Allocation failure.");
 		return err;
@@ -65,7 +65,7 @@ CSET_TEST_POST
 }
 
 static char *
-cset_test_malloc_case
+cset_test_cset_test_malloc_case
 (char *err, struct cset_test_case **testCase)
 {CSET_TEST_PRE
 	if (err != NULL) {
@@ -75,7 +75,7 @@ cset_test_malloc_case
 		err = cset_test_err("Struct parameter is not initialized with NULL.");
 		return err;
 	}
-	*testCase = malloc(sizeof(struct cset_test_case));
+	*testCase = cset_test_malloc(sizeof(struct cset_test_case));
 	if (*testCase == NULL) {
 		err = cset_test_err("Allocation failure.");
 		return err;
@@ -119,7 +119,7 @@ cset_test_strcpy
 		err = cset_test_err("Missing source name.");
 		return err;
 	}
-	*dstname = calloc(len+1, sizeof(char));
+	*dstname = cset_test_calloc(len+1, sizeof(char));
 	if (*dstname == NULL) {
 		err = cset_test_err("Allocation failure.");
 		return err;
@@ -147,7 +147,7 @@ cset_test_add_case
 	if (err != NULL) {
 		return err;
 	}
-	err = cset_test_malloc_case(err, testCase);
+	err = cset_test_cset_test_malloc_case(err, testCase);
 	err = cset_test_init_case(err, *testCase);
 	err = cset_test_strcpy(err, &(*testCase)->filename, filename);
 	err = cset_test_strcpy(err, &(*testCase)->funcname, funcname);
@@ -180,7 +180,7 @@ cset_test_New
 	if (err != NULL) {
 		return err;
 	}
-	err = cset_test_malloc_data(err, data);
+	err = cset_test_cset_test_malloc_data(err, data);
 	err = cset_test_init_data(err, *data);
 	err = cset_test_strcpy(err, &(*data)->name, name);
 	(*data)->mode = mode;
@@ -520,7 +520,7 @@ cset_test_Run
 		return err;
 	}
 	size_t index = data->total++;
-	err = cset_test_realloc_cases(err, &data->cases, data->total);
+	err = cset_test_cset_test_realloc_cases(err, &data->cases, data->total);
 	err = cset_test_add_case(
 		err,
 		filename, funcname, line,

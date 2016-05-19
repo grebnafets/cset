@@ -1,4 +1,0 @@
-#ifndef CSET_TEST_LINUX
-#define CSET_TEST_LINUX 1
-
-#endif // CSET_TEST_LINUX
