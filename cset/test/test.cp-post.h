@@ -417,7 +417,8 @@ cset_test_display_case
 	char *func = data->cases[index]->funcname;
 	char *file = data->cases[index]->filename;
 	int line = data->cases[index]->line;
-	len = strlen(desc) + strlen(cond) + strlen(func) + strlen(file) + 1000;
+	const int arbitrary = 1000; // "Reasonable large number to account for number in string.
+	len = strlen(desc) + strlen(cond) + strlen(func) + strlen(file) + arbitrary;
 	char storage[len];
 	char *buf = storage;
 	result = data->cases[index]->result;
