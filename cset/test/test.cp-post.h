@@ -3,7 +3,7 @@
 
 // Prepare memory for data {{{
 static char *
-cset_test_cset_test_malloc_data
+cset_test_malloc_data
 (char *err, struct cset_test_Data **data)
 {CSET_TEST_PRE
 	if (err != NULL) {
@@ -47,7 +47,7 @@ CSET_TEST_POST
 
 // Prepare memory for cases {{{
 static char *
-cset_test_cset_test_realloc_cases
+cset_test_realloc_cases
 (char *err, struct cset_test_case ***cases, size_t count)
 {CSET_TEST_PRE
 	if (err != NULL) {
@@ -65,7 +65,7 @@ CSET_TEST_POST
 }
 
 static char *
-cset_test_cset_test_malloc_case
+cset_test_malloc_case
 (char *err, struct cset_test_case **testCase)
 {CSET_TEST_PRE
 	if (err != NULL) {
@@ -147,7 +147,7 @@ cset_test_add_case
 	if (err != NULL) {
 		return err;
 	}
-	err = cset_test_cset_test_malloc_case(err, testCase);
+	err = cset_test_malloc_case(err, testCase);
 	err = cset_test_init_case(err, *testCase);
 	err = cset_test_strcpy(err, &(*testCase)->filename, filename);
 	err = cset_test_strcpy(err, &(*testCase)->funcname, funcname);
@@ -180,7 +180,7 @@ cset_test_New
 	if (err != NULL) {
 		return err;
 	}
-	err = cset_test_cset_test_malloc_data(err, data);
+	err = cset_test_malloc_data(err, data);
 	err = cset_test_init_data(err, *data);
 	err = cset_test_strcpy(err, &(*data)->name, name);
 	(*data)->mode = mode;
@@ -520,7 +520,7 @@ cset_test_Run
 		return err;
 	}
 	size_t index = data->total++;
-	err = cset_test_cset_test_realloc_cases(err, &data->cases, data->total);
+	err = cset_test_realloc_cases(err, &data->cases, data->total);
 	err = cset_test_add_case(
 		err,
 		filename, funcname, line,
