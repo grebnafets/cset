@@ -110,13 +110,17 @@ cset_test_strcpy
 	if (err != NULL) {
 		return err;
 	}
+	if (srcname == NULL) {
+		err = cset_test_err("Missing source name. (NULL)");
+		return err;
+	}
 	if (*dstname != NULL) { 
 		err = cset_test_err("Destination name is not initialized with NULL.");
 		return err;
 	}
 	int len = strlen(srcname);
 	if (len == 0) {
-		err = cset_test_err("Missing source name.");
+		err = cset_test_err("Missing source name. (\"\")");
 		return err;
 	}
 	*dstname = cset_test_calloc(len+1, sizeof(char));
@@ -154,10 +158,6 @@ cset_test_add_case
 	err = cset_test_strcpy(err, &(*testCase)->testname, testname);
 	err = cset_test_strcpy(err, &(*testCase)->description, description);
 	if (err != NULL) {
-		return err;
-	}
-	if (filename == NULL || strlen(filename) == 0) {
-		err = cset_test_err("Could not determine filename.");
 		return err;
 	}
 	(*testCase)->line = line;
