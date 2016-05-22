@@ -21,6 +21,9 @@ extern "C" {
 #ifdef __linux__
 	#include <cset/test/test.linux.h>
 #endif
+#ifdef __minix
+	#include <cset/test/test.minix.h>
+#endif
 */
 #include <cset/test/test.cp-post.h>
 
