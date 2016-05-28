@@ -19,38 +19,36 @@ static cset_gate_Gate cset_mem_lock;
 
 char *
 _cset_mem_err(const char *desc, const char *file, const char *func, int line)
-{CSET_MEM_PRE
+{
+CSET_MEM_PRE
 	char *err = NULL;
 	size_t desclen, filelen, funclen, len;
 	desclen = strlen(desc);
 	filelen = strlen(file);
 	funclen = strlen(func);
-	if (desclen >= 3000 || filelen >= 3000 || funclen >= 3000) {
-		// I reserve 128 bytes for the representation of line a number.
-		// 128 is overkill but who knows. Maybe registers size will
-		// change in the future, expanding the need to reserve more
-		// bytes for number repesentation.
-		err = calloc(strlen("ErrLvOver9000")+128, sizeof(char));
-		if (err == NULL) { // Time to panic.
-			fprintf(stderr, "ENOMEM\n");
-			fflush(stderr);
-			abort();
-		}
-		sprintf(err, "%d:%s", line, "ErrLvOver9000");
-		return err;
-	}
+	// I reserve 128 bytes for the representation of line a number.
+	// 128 is overkill but who knows. Maybe registers size will
+	// change in the future, expanding the need to reserve more
+	// bytes for number repesentation.
 	len = desclen + filelen + funclen + 128;
 	char tmp[len];
 	memset(tmp, '\0', len);
-	sprintf(tmp, "%d:%s:%s:%s", line, func, file, desc);
 	len = strlen(tmp)+1;
+	cset_gate_Lock(&cset_mem_lock);
+	sprintf(tmp, "%d:%s:%s:%s", line, func, file, desc);
+	cset_gate_Unlock(&cset_mem_lock);
+	len = strlen(tmp)+1;
+	cset_gate_Lock(&cset_mem_lock);
 	err = calloc(len, sizeof(char));
+	cset_gate_Unlock(&cset_mem_lock);
 	if (err == NULL) { // Time to panic.
 		fprintf(stderr, "ENOMEM\n");
 		fflush(stderr);
 		abort();
 	}
+	cset_gate_Lock(&cset_mem_lock);
 	strncpy(err, tmp, len);
+	cset_gate_Unlock(&cset_mem_lock);
 CSET_MEM_POST
 	return err;
 }
