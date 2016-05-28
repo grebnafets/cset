@@ -54,14 +54,20 @@ struct cset_test_Data {
 
 // err {{{
 static char *
-_cset_test_err(const char *desc, const char *func, int line)
+_cset_test_err(const char *desc, const char *file, const char *func, int line)
 {CSET_TEST_PRE
 	char *err = NULL;
-	size_t len = strlen(desc)+128;
-	if (len == 0 || len > 9000 || line <= 0 || strlen(func) > 9000) {
-		// Will only run if you are not being nice.
+	size_t desclen, filelen, funclen, len;
+	desclen = strlen(desc);
+	filelen = strlen(file);
+	funclen = strlen(func);
+	if (desclen >= 3000 || filelen >= 3000 || funclen >= 3000) {
+		// I reserve 128 bytes for the representation of line a number.
+		// 128 is overkill but who knows. Maybe registers size will
+		// change in the future, expanding the need to reserve more
+		// bytes for number repesentation.
 		err = calloc(strlen("ErrLvOver9000")+128, sizeof(char));
-		if (err == NULL) {
+		if (err == NULL) { // Time to panic.
 			fprintf(stderr, "ENOMEM\n");
 			fflush(stderr);
 			abort();
@@ -69,16 +75,22 @@ _cset_test_err(const char *desc, const char *func, int line)
 		sprintf(err, "%d:%s", line, "ErrLvOver9000");
 		return err;
 	}
+	len = desclen + filelen + funclen + 128;
 	char tmp[len];
 	memset(tmp, '\0', len);
-	sprintf(tmp, "%d:%s:%s", line, func, desc);
+	sprintf(tmp, "%d:%s:%s:%s", line, func, file, desc);
 	len = strlen(tmp)+1;
 	err = calloc(len, sizeof(char));
+	if (err == NULL) { // Time to panic.
+		fprintf(stderr, "ENOMEM\n");
+		fflush(stderr);
+		abort();
+	}
 	strncpy(err, tmp, len);
 CSET_TEST_POST
 	return err;
 }
-#define cset_test_err(desc) _cset_test_err(desc, __func__, __LINE__)
+#define cset_test_err(desc) _cset_test_err(desc, __FILE__, __func__, __LINE__)
 // }}}
 
 // Experimental toy to guard memory for malloc, calloc, realloc and free.

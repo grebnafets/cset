@@ -18,16 +18,20 @@
 static cset_gate_Gate cset_mem_lock;
 
 char *
-_cset_mem_err(const char *desc, const char *func, int line)
+_cset_mem_err(const char *desc, const char *file, const char *func, int line)
 {CSET_MEM_PRE
 	char *err = NULL;
-	size_t len = strlen(desc)+128;
-	if (len == 0 || len > 9000 || line <= 0 || strlen(func) > 9000) {
-		// Will only run if you are not being nice.
-		cset_gate_Lock(&cset_mem_lock);
+	size_t desclen, filelen, funclen, len;
+	desclen = strlen(desc);
+	filelen = strlen(file);
+	funclen = strlen(func);
+	if (desclen >= 3000 || filelen >= 3000 || funclen >= 3000) {
+		// I reserve 128 bytes for the representation of line a number.
+		// 128 is overkill but who knows. Maybe registers size will
+		// change in the future, expanding the need to reserve more
+		// bytes for number repesentation.
 		err = calloc(strlen("ErrLvOver9000")+128, sizeof(char));
-		cset_gate_Unlock(&cset_mem_lock);
-		if (err == NULL) {
+		if (err == NULL) { // Time to panic.
 			fprintf(stderr, "ENOMEM\n");
 			fflush(stderr);
 			abort();
@@ -35,18 +39,22 @@ _cset_mem_err(const char *desc, const char *func, int line)
 		sprintf(err, "%d:%s", line, "ErrLvOver9000");
 		return err;
 	}
+	len = desclen + filelen + funclen + 128;
 	char tmp[len];
 	memset(tmp, '\0', len);
-	sprintf(tmp, "%d:%s:%s", line, func, desc);
+	sprintf(tmp, "%d:%s:%s:%s", line, func, file, desc);
 	len = strlen(tmp)+1;
-	cset_gate_Lock(&cset_mem_lock);
 	err = calloc(len, sizeof(char));
-	cset_gate_Unlock(&cset_mem_lock);
+	if (err == NULL) { // Time to panic.
+		fprintf(stderr, "ENOMEM\n");
+		fflush(stderr);
+		abort();
+	}
 	strncpy(err, tmp, len);
 CSET_MEM_POST
 	return err;
 }
-#define cset_mem_err(desc) _cset_mem_err(desc, __func__, __LINE__)
+#define cset_mem_err(desc) _cset_mem_err(desc, __FILE__, __func__, __LINE__)
 
 char *cset_mem_malloc(char *err, size_t size, void *p)
 {
@@ -83,6 +91,10 @@ CSET_MEM_PRE
 	cset_gate_Lock(&cset_mem_lock);
 	*ptr = calloc(n, size);
 	cset_gate_Unlock(&cset_mem_lock);
+	if (ptr == NULL) {
+		err = cset_mem_err("ENOMEM");
+		return err;
+	}
 CSET_MEM_POST
 	return err;
 }
@@ -97,6 +109,10 @@ CSET_MEM_PRE
 	cset_gate_Lock(&cset_mem_lock);
 	*ptr = realloc(*ptr, size);
 	cset_gate_Unlock(&cset_mem_lock);
+	if (ptr == NULL) {
+		err = cset_mem_err("ENOMEM");
+		return err;
+	}
 CSET_MEM_POST
 	return err;
 }
