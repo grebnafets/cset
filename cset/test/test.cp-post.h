@@ -128,7 +128,9 @@ cset_test_strcpy
 		err = cset_test_err("Allocation failure.");
 		return err;
 	}
+	cset_test_atomic_open(&cset_test_atomic_gate_memory);
 	strncpy(*dstname, srcname, len);
+	cset_test_atomic_close(&cset_test_atomic_gate_memory);
 CSET_TEST_POST
 	return err;
 }
@@ -232,8 +234,10 @@ cset_test_set_bg(
 	size_t len = strlen(text);
 	char buffer[len+1];
 	memset(buffer, '\0', len+1);
+	cset_test_atomic_open(&cset_test_atomic_gate_memory);
 	strncpy(buffer, text, len);
 	sprintf(*colortext, "\x1b[48;2;%d;%d;%dm%s\x1b[0m", r, g, b, buffer);
+	cset_test_atomic_close(&cset_test_atomic_gate_memory);
 CSET_TEST_POST
 	return err;
 }
@@ -256,8 +260,10 @@ cset_test_set_fg(
 	size_t len = strlen(text);
 	char buffer[len+1];
 	memset(buffer, '\0', len+1);
+	cset_test_atomic_open(&cset_test_atomic_gate_memory);
 	strncpy(buffer, text, len);
 	sprintf(*colortext, "\x1b[38;2;%d;%d;%dm%s\x1b[0m", r, g, b, buffer);
+	cset_test_atomic_close(&cset_test_atomic_gate_memory);
 CSET_TEST_POST
 	return err;
 }
@@ -423,7 +429,10 @@ cset_test_display_case
 	char *buf = storage;
 	result = data->cases[index]->result;
 	memset(buf, '\0', len);
+	cset_test_atomic_open(&cset_test_atomic_gate_memory);
 	sprintf(buf, "%d:%s:%s:%s:%s", line, cond, func, file, desc);
+	cset_test_atomic_close(&cset_test_atomic_gate_memory);
+	setbuf(stdout, NULL);
 	// Display result if mode is set.
 	if (result && cset_test_mode(data, CSET_TEST_MODE_SHOW_SUCCESS)) {
 		// Color success {{{
