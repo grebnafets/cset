@@ -1,6 +1,9 @@
 #ifndef CSET_ERR
 #define CSET_ERR 1
 
+// err reserves the following variable names:
+//	err, error, ERROR and __line__.
+
 // C++<- {{{
 #ifdef __cplusplus
 extern "C" {

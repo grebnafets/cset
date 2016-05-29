@@ -16,6 +16,8 @@
 #define cset_gate_Gate volatile int
 #define cset_gate_Pass volatile int
 
+cset_gate_Pass cset_gate_Mem;
+
 extern inline void
 cset_gate_Enter
 (cset_gate_Gate *gate, cset_gate_Pass *pass)
@@ -72,7 +74,7 @@ cset_gate_Unlock
 CSET_GATE_POST
 }
 
-// TODO: if one unlock both. else: dec pass.
+// TODO: if isLast: unlock gate; else: only checkout pass;
 extern inline void
 cset_gate_Leave
 (cset_gate_Gate *gate, cset_gate_Pass *pass)
@@ -88,7 +90,6 @@ cset_gate_Leave
 	);
 CSET_GATE_POST
 }
-
 // }}}
 
 #endif // CSET_GATE_CROSS_PLATFORM_PRE

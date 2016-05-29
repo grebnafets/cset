@@ -1,6 +1,25 @@
 #ifndef CSET_TEST_CROSS_PLATFORM_PRE
 #define CSET_TEST_CROSS_PLATFORM_PRE 1
 
+// Possible hooks for every function and do while macro.
+// You can test this with #define CSET_TEST_PRE printf("%s\n", __func__);
+// Add it _before_ you add test.h
+#ifndef CSET_TEST_PRE
+	#define CSET_TEST_PRE
+#endif
+#ifndef CSET_TEST_POST
+	#define CSET_TEST_POST
+#endif
+
+// dependency {{{
+#include <time.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+// }}}
+
 #define CSET_TEST_MODE_SHOW_SUCCESS (size_t)1
 #define CSET_TEST_MODE_SHOW_FAILURE (size_t)2
 #define CSET_TEST_MODE_SHOW_MESSAGE (size_t)4
@@ -32,25 +51,6 @@ struct cset_test_Data {
 	} fg;
 	struct cset_test_case **cases;
 };
-
-// Possible hooks for every function and do while macro.
-// You can test this with #define CSET_TEST_PRE printf("%s\n", __func__);
-// Add it _before_ you add test.h
-#ifndef CSET_TEST_PRE
-	#define CSET_TEST_PRE
-#endif
-#ifndef CSET_TEST_POST
-	#define CSET_TEST_POST
-#endif
-
-// dependency {{{
-#include <time.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-// }}}
 
 // Experimental toy to guard memory for malloc, calloc, realloc and free.
 // {{{
