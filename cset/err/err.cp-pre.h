@@ -25,10 +25,8 @@ CSET_ERR_PRE
 	desclen = strlen(desc);
 	filelen = strlen(file);
 	funclen = strlen(func);
-	// I reserve 128 bytes for the representation of __line__ a number.
-	// 128 is overkill but who knows. Maybe registers size will
-	// change in the future, expanding the need to reserve more
-	// bytes for number repesentation.
+	// I reserve 128 bytes for the representation of __line__ a number
+	// because I am lazy...
 	len = desclen + filelen + funclen + 128;
 	char tmp[len];
 	memset(tmp, '\0', len);
