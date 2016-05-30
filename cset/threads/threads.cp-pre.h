@@ -3,7 +3,6 @@
 
 // dependency {{{
 #include <cset/gate/gate.h>
-#include <cset/mem/mem.h>
 #include <cset/err/err.h>
 // }}}
 

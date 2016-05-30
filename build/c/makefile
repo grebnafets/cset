@@ -1,7 +1,7 @@
 SEARCH_PATH=-I$(CSET_SEARCH_PATH)
 
 FLAGS=-std=gnu99 -Wall -Werror -Wextra -pthread
-LINKS=-lm
+LINKS=-lm -lOpenCL
 
 CC=gcc -g $(SEARCH_PATH)
 COMPILER=$(CC) $(FLAGS) $(LINKS)
