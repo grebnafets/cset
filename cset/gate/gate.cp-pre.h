@@ -84,13 +84,16 @@ cset_gate_Leave
 (cset_gate_Gate *gate, cset_gate_Pass *pass)
 {CSET_GATE_PRE
 	asm volatile (
-		"cmp %[pass], %[isLast]\n"
+		"mov %[pass], %%eax\n"
+		"add %[checkout], %[pass]\n"
+		"cmp %[isLast], %%eax\n"
 		"jg cset_gate_Leave_skip\n"
 		"mov %[unlock], %[gate]\n"
+		"mov %[unlock], %[pass]\n" // Make sure pass is 0 to make this operation idempotent.
 		"cset_gate_Leave_skip:\n"
-		"add %[checkout], %[pass]\n"
 		: [gate] "=m" (*gate), [pass] "=m" (*pass)
 		: [unlock] "r" (0), [checkout] "r" (-1), [isLast] "r" (1)
+		: "eax"
 	);
 CSET_GATE_POST
 }

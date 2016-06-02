@@ -12,6 +12,7 @@
 // sync between two threads and force a race condition. In userland, this
 // requires me to implement a fine grated virtual machine where I force
 // spinlock on each turn. Ugh...
+// // Double ugh...
 
 // TODO: Write test that forces spinlock and releace form a different thread.
 
@@ -20,24 +21,24 @@ cset_gate_Pass pass = 0; // Here pass is shared between two functions.
 
 void one()
 {
-	printf("one pass=%d\n", pass);
+	printf("one pass=%d, gate=%d\n", pass, gate);
 	cset_gate_Enter(&gate, &pass);
 	cset_gate_Leave(&gate, &pass);
-	printf("one pass=%d\n", pass);
+	printf("one pass=%d, gate=%d\n", pass, gate);
 }
 
 void two()
 {
-	printf("two pass=%d\n", pass);
+	printf("two pass=%d\n", pass, gate);
 	cset_gate_Enter(&gate, &pass);
 	one();
 	cset_gate_Leave(&gate, &pass);
-	printf("two pass=%d\n", pass);
+	printf("two pass=%d\n", pass, gate);
 }
 
 void exampleUse(int count)
 {
-	printf("pass=%d\n", pass);
+	printf("pass=%d, gate=%d\n", pass, gate);
 	cset_gate_Enter(&gate, &pass);
 	if (count == 3) {
 		// pass = 0; // force deadlock.
@@ -47,7 +48,7 @@ void exampleUse(int count)
 		exampleUse(++count);
 	}
 	cset_gate_Leave(&gate, &pass);
-	printf("pass=%d\n", pass);
+	printf("pass=%d, gate=%d\n", pass, gate);
 }
 
 void foo()
