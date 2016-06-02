@@ -31,7 +31,7 @@ cset_gate_Enter
 		"jge cset_gate_Enter_skip\n"
 		"mov %[lock], %%eax\n"        // Spinlock start
 		"cmp %[gate], %%eax\n"        // Check if locked
-		"je cset_gate_Lock_wait\n"    // If locked, wait.
+		"je cset_gate_Enter_wait\n"    // If locked, wait.
 		"lock xchg %%eax, %[gate]\n"
 		"test %%eax, %%eax\n"
 		"jnz cset_gate_Enter_wait\n"  // Spinlock end
