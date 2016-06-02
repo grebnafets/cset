@@ -30,6 +30,8 @@ cset_gate_Enter
 		"cmp %[lock], %[checkin]\n"   // Skip if pass >= lock
 		"jge cset_gate_Enter_skip\n"
 		"mov %[lock], %%eax\n"        // Spinlock start
+		"cmp %[gate], %%eax\n"        // Check if locked
+		"je cset_gate_Lock_wait\n"    // If locked, wait.
 		"lock xchg %%eax, %[gate]\n"
 		"test %%eax, %%eax\n"
 		"jnz cset_gate_Enter_wait\n"  // Spinlock end
@@ -52,6 +54,8 @@ cset_gate_Lock
 		"pause\n"                    // Stroke beard, check phone/watch.
 		"cset_gate_Lock_check:\n"    // Ok, lets do this...
 		"mov %[lock], %%eax\n"       // eax = 1
+		"cmp %[gate], %%eax\n"       // Check if locked
+		"je cset_gate_Lock_wait\n"   // If locked, wait.
 		"lock xchg %%eax, %[gate]\n" // Exhange eax with gate value.
 		"test %%eax, %%eax\n"        // 1 = closed, 0 = open.
 		"jnz cset_gate_Lock_wait\n"  // Ohhh man, here I go again...

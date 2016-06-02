@@ -50,10 +50,30 @@ void exampleUse(int count)
 	printf("pass=%d\n", pass);
 }
 
+void foo()
+{
+	printf("foo gate=%d\n", gate);
+	cset_gate_Lock(&gate);
+	cset_gate_Unlock(&gate);
+	printf("foo gate=%d\n", gate);
+
+}
+
+void bar()
+{
+	printf("bar gate=%d\n", gate);
+	foo();
+	cset_gate_Lock(&gate);
+	// foo(); // force deadlock
+	cset_gate_Unlock(&gate);
+	printf("bar gate=%d\n", gate);
+}
+
 int main(int argc, char **argv)
 {
 	one();
 	two();
 	exampleUse(0);
+	bar();
 	return EXIT_SUCCESS;
 }
