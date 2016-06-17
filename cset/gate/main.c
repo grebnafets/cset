@@ -38,17 +38,23 @@ void two()
 
 void exampleUse(int count)
 {
-	printf("pass=%d, gate=%d\n", pass, gate);
-	cset_gate_Enter(&gate, &pass);
+	int underflow;
+	static cset_gate_Pass myStaticPass = 0;
+	printf("pass=%d, gate=%d\n", myStaticPass, gate);
+	cset_gate_Enter(&gate, &myStaticPass);
 	if (count == 3) {
-		// pass = 0; // force deadlock.
+		// myStaticPass = 0; // force deadlock.
 	}
 	if (count < 5) {
 		printf("Count = %d\n", count);
 		exampleUse(++count);
 	}
-	cset_gate_Leave(&gate, &pass);
-	printf("pass=%d, gate=%d\n", pass, gate);
+	underflow = cset_gate_Leave(&gate, &myStaticPass);
+	if (!underflow) {
+		printf("pass=%d, gate=%d\n", myStaticPass, gate);
+	} else {
+		printf("underflow detected\n");
+	}
 }
 
 void foo()

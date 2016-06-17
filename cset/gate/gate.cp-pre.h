@@ -27,17 +27,17 @@ cset_gate_Enter
 		"cset_gate_Enter_wait:\n"
 		"pause\n"
 		"cset_gate_Enter_check:\n"
-		"cmp %[lock], %[checkin]\n"   // Skip if pass >= lock
+		"cmp %[lock], %[pass]\n"     // Skip if pass >= lock
 		"jge cset_gate_Enter_skip\n"
-		"mov %[lock], %%eax\n"        // Spinlock start
-		"cmp %[gate], %%eax\n"        // Check if locked
-		"je cset_gate_Enter_wait\n"    // If locked, wait.
+		"mov %[lock], %%eax\n"       // Spinlock start
+		"cmp %[gate], %%eax\n"       // Check if locked
+		"je cset_gate_Enter_wait\n"  // If locked, wait.
 		"lock xchg %%eax, %[gate]\n"
 		"test %%eax, %%eax\n"
-		"jnz cset_gate_Enter_wait\n"  // Spinlock end
+		"jnz cset_gate_Enter_wait\n" // Spinlock end
 		"cset_gate_Enter_skip:\n"
-		"add %[lock], %[checkin]\n"   // Checkin pass
-		: [gate] "=m" (*gate), [checkin] "=m" (*pass)
+		"add %[lock], %[pass]\n"     // Checkin pass
+		: [gate] "=m" (*gate), [pass] "=m" (*pass)
 		: [lock] "r" (1)
 		: "eax"
 	);
@@ -79,23 +79,26 @@ CSET_GATE_POST
 }
 
 // TODO: if isLast: unlock gate; else: only checkout pass;
-extern inline void
+extern inline int
 cset_gate_Leave
 (cset_gate_Gate *gate, cset_gate_Pass *pass)
 {CSET_GATE_PRE
+	if (*pass <= 0) {
+		// Signal underflow for debugging.
+		return -1;
+	}
 	asm volatile (
-		"mov %[pass], %%eax\n"
+		// Cleaner solution thanks to forsvarir/stackoverflow
 		"add %[checkout], %[pass]\n"
-		"cmp %[isLast], %%eax\n"
-		"jg cset_gate_Leave_skip\n"
+		"jnz cset_gate_Leave_skip\n"
 		"mov %[unlock], %[gate]\n"
-		"mov %[unlock], %[pass]\n" // Make sure pass is 0 to make this operation idempotent.
 		"cset_gate_Leave_skip:\n"
 		: [gate] "=m" (*gate), [pass] "=m" (*pass)
-		: [unlock] "r" (0), [checkout] "r" (-1), [isLast] "r" (1)
+		: [unlock] "r" (0), [checkout] "r" (-1)
 		: "eax"
 	);
 CSET_GATE_POST
+	return 0;
 }
 // }}}
 
